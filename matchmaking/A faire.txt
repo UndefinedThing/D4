@@ -1,0 +1,10 @@
+faire le server de server :
+    -faire une creation de salon avec 2 joueur max co dessus
+    -choix d'un pseudo avant d'acceder au salons
+
+Communication:
+    -network
+    -affichage des joueurs en attente de games
+
+base de donnée a faire en SQL
+Acces au meme compte depuis un autre ordi

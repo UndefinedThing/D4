@@ -1,7 +1,9 @@
 from tkinter import *
+from tkinter.messagebox import showinfo
 import classe
 from classe import Pieces
 from PIL import ImageTk, Image
+from collections import OrderedDict
 
 
 class Plateau:
@@ -10,6 +12,8 @@ class Plateau:
     """
 
     def __init__(self, window):
+        self.window = window
+        self.firstClick = True
         self.plateau = Canvas(window, width =400, height =400, bg ='white')
         self.plateau.delete(ALL)
         self.plateau.pack()
@@ -24,56 +28,140 @@ class Plateau:
         "=================================================================BLANC==================================================================================="
         
         "Tour"
-        self.tourBA = Pieces.Tour('blanc', 25,25); self.plateau.create_image(self.tourBA.positionX ,self.tourBA.positionY, image = self.tourBA.image )
-        self.tourBH = Pieces.Tour('blanc', 375,25); self.plateau.create_image(self.tourBH.positionX ,self.tourBH.positionY, image = self.tourBH.image )
+        self.tourBA = Pieces.Pieces('tour', 'blanc', 25,25)
+        self.tourBH = Pieces.Pieces('tour', 'blanc', 375,25)
         
         "Cavalier"
-        self.cavalierBB = Pieces.Cavalier('blanc',75,25); self.plateau.create_image(self.cavalierBB.positionX ,self.cavalierBB.positionY, image = self.cavalierBB.image )
-        self.cavalierBG = Pieces.Cavalier('blanc',325,25); self.plateau.create_image(self.cavalierBG.positionX ,self.cavalierBG.positionY, image = self.cavalierBG.image )
+        self.cavalierBB = Pieces.Pieces('cavalier','blanc',75,25)
+        self.cavalierBG = Pieces.Pieces('cavalier','blanc',325,25)
         
         "Fou"
-        self.fouBC = Pieces.Fou('blanc',125,25); self.plateau.create_image(self.fouBC.positionX ,self.fouBC.positionY, image = self.fouBC.image )
-        self.fouBF = Pieces.Fou('blanc',275,25); self.plateau.create_image(self.fouBF.positionX ,self.fouBF.positionY, image = self.fouBF.image )
+        self.fouBC = Pieces.Pieces('fou','blanc',125,25)
+        self.fouBF = Pieces.Pieces('fou','blanc',275,25)
 
         "Reine/Roi"
-        self.reineB = Pieces.Reine('blanc',175,25); self.plateau.create_image(self.reineB.positionX ,self.reineB.positionY, image = self.reineB.image )
-        self.roiB = Pieces.Roi('blanc',225,25); self.plateau.create_image(self.roiB.positionX ,self.roiB.positionY, image = self.roiB.image )
+        self.reineB = Pieces.Pieces('reine','blanc',175,25)
+        self.roiB = Pieces.Pieces('roi','blanc',225,25)
 
         "Pion"
-        self.pionBA = Pieces.Pion('blanc',25,75); self.plateau.create_image(self.pionBA.positionX ,self.pionBA.positionY, image = self.pionBA.image)
-        self.pionBB = Pieces.Pion('blanc',75,75); self.plateau.create_image(self.pionBB.positionX ,self.pionBB.positionY, image = self.pionBB.image)
-        self.pionBC = Pieces.Pion('blanc',125,75); self.plateau.create_image(self.pionBC.positionX ,self.pionBC.positionY, image = self.pionBC.image)
-        self.pionBD = Pieces.Pion('blanc',175,75); self.plateau.create_image(self.pionBD.positionX ,self.pionBD.positionY, image = self.pionBD.image)
-        self.pionBE = Pieces.Pion('blanc',225,75); self.plateau.create_image(self.pionBE.positionX ,self.pionBE.positionY, image = self.pionBE.image)
-        self.pionBF = Pieces.Pion('blanc',275,75); self.plateau.create_image(self.pionBF.positionX ,self.pionBF.positionY, image = self.pionBF.image)
-        self.pionBG = Pieces.Pion('blanc',325,75); self.plateau.create_image(self.pionBG.positionX ,self.pionBG.positionY, image = self.pionBG.image)
-        self.pionBH = Pieces.Pion('blanc',375,75); self.plateau.create_image(self.pionBH.positionX ,self.pionBH.positionY, image = self.pionBH.image)
+        self.pionBA = Pieces.Pieces('pion','blanc',25,75)
+        self.pionBB = Pieces.Pieces('pion','blanc',75,75)
+        self.pionBC = Pieces.Pieces('pion','blanc',125,75)
+        self.pionBD = Pieces.Pieces('pion','blanc',175,75)
+        self.pionBE = Pieces.Pieces('pion','blanc',225,75)
+        self.pionBF = Pieces.Pieces('pion','blanc',275,75)
+        self.pionBG = Pieces.Pieces('pion','blanc',325,75)
+        self.pionBH = Pieces.Pieces('pion','blanc',375,75)
 
         "=================================================================NOIR==================================================================================="
     
         "Tour"
-        self.tourN1 = Pieces.Tour('noir', 25,375); self.plateau.create_image(self.tourN1.positionX ,self.tourN1.positionY, image = self.tourN1.image )
-        self.tourN2 = Pieces.Tour('noir', 375,375); self.plateau.create_image(self.tourN2.positionX ,self.tourN2.positionY, image = self.tourN2.image )
+        self.tourNA = Pieces.Pieces('tour','noir', 25,375)
+        self.tourNH = Pieces.Pieces('tour','noir', 375,375)
 
         "Cavalier"
-        self.cavalierN1 = Pieces.Cavalier('noir',75,375); self.plateau.create_image(self.cavalierN1.positionX ,self.cavalierN1.positionY, image = self.cavalierN1.image )
-        self.cavalierN2 = Pieces.Cavalier('noir',325,375); self.plateau.create_image(self.cavalierN2.positionX ,self.cavalierN2.positionY, image = self.cavalierN2.image )
+        self.cavalierNB = Pieces.Pieces('cavalier','noir',75,375)
+        self.cavalierNG = Pieces.Pieces('cavalier','noir',325,375)
 
         "Fou"
-        self.fouN1 = Pieces.Fou('noir',125,375); self.plateau.create_image(self.fouN1.positionX ,self.fouN1.positionY, image = self.fouN1.image )
-        self.fouN2 = Pieces.Fou('noir',275,375); self.plateau.create_image(self.fouN2.positionX ,self.fouN2.positionY, image = self.fouN2.image )
+        self.fouNC = Pieces.Pieces('fou','noir',125,375);
+        self.fouNF = Pieces.Pieces('fou','noir',275,375) 
 
         "Reine/Roi"
-        self.reineN = Pieces.Reine('noir',175,375); self.plateau.create_image(self.reineN.positionX ,self.reineN.positionY, image = self.reineN.image )
-        self.roiN = Pieces.Roi('noir',225,375); self.plateau.create_image(self.roiN.positionX ,self.roiN.positionY, image = self.roiN.image )
+        self.reineN = Pieces.Pieces('reine','noir',175,375)
+        self.roiN = Pieces.Pieces('roi','noir',225,375)
 
         "Pion"
-        self.pionNA = Pieces.Pion('noir',25,325); self.plateau.create_image(self.pionNA.positionX ,self.pionNA.positionY, image = self.pionNA.image)
-        self.pionNB = Pieces.Pion('noir',75,325); self.plateau.create_image(self.pionNB.positionX ,self.pionNB.positionY, image = self.pionNB.image)
-        self.pionNC = Pieces.Pion('noir',125,325); self.plateau.create_image(self.pionNC.positionX ,self.pionNC.positionY, image = self.pionNC.image)
-        self.pionND = Pieces.Pion('noir',175,325); self.plateau.create_image(self.pionND.positionX ,self.pionND.positionY, image = self.pionND.image)
-        self.pionNE = Pieces.Pion('noir',225,325); self.plateau.create_image(self.pionNE.positionX ,self.pionNE.positionY, image = self.pionNE.image)
-        self.pionNF = Pieces.Pion('noir',275,325); self.plateau.create_image(self.pionNF.positionX ,self.pionNF.positionY, image = self.pionNF.image)
-        self.pionNG = Pieces.Pion('noir',325,325); self.plateau.create_image(self.pionNG.positionX ,self.pionNG.positionY, image = self.pionNG.image)
-        self.pionNH = Pieces.Pion('noir',375,325); self.plateau.create_image(self.pionNH.positionX ,self.pionNH.positionY, image = self.pionNH.image)
+        self.pionNA = Pieces.Pieces('pion','noir',25,325)
+        self.pionNB = Pieces.Pieces('pion','noir',75,325)
+        self.pionNC = Pieces.Pieces('pion','noir',125,325)
+        self.pionND = Pieces.Pieces('pion','noir',175,325)
+        self.pionNE = Pieces.Pieces('pion','noir',225,325)
+        self.pionNF = Pieces.Pieces('pion','noir',275,325)
+        self.pionNG = Pieces.Pieces('pion','noir',325,325)
+        self.pionNH = Pieces.Pieces('pion','noir',375,325)
         
+        self.dicoJeux = {0:self.tourBA,1:self.cavalierBB,2:self.fouBC,3:self.reineB,4:self.roiB,5:self.fouBF,6:self.cavalierBG,7:self.tourBH,
+                         8:self.pionBA,9:self.pionBB,10:self.pionBC,11:self.pionBD,12:self.pionBE,13:self.pionBF,14:self.pionBG,15:self.pionBH,
+                         48:self.pionNA,49:self.pionNB,50:self.pionNC,51:self.pionND,52:self.pionNE,53:self.pionNF,54:self.pionNG,55:self.pionNH,
+                         56:self.tourNA,57:self.cavalierNB,58:self.fouNC,59:self.reineN,60:self.roiN,61:self.fouNF,62:self.cavalierNG,63:self.tourNH}
+        for i in range(16,48):
+            self.dicoJeux[i] = ' '
+        self.dicoJeux = OrderedDict(sorted(self.dicoJeux.items(), key=lambda t: t[0]))
+
+        self.listPosition= []
+        for y in range(0, 8):
+            y = y*50+25
+            for x in range(0, 8):
+                x = x*50+25
+                self.listPosition.append([x,y])
+        self.pieceSelect = None
+        self.creationPlateau(self.dicoJeux)
+
+    def select(self, event):
+        x = event.x
+        y = event.y
+        x=event.x%50
+        x=(event.x-x)+25
+        y=event.y%50
+        y=(event.y-y)+25
+        listXY = [x,y]
+        listXYR = [x,y,'red']
+        listXYG = [x,y,'green']
+        print(listXYG)
+        if self.firstClick == True:
+            self.pieceSelect = self.dicoJeux[self.listPosition.index(listXY)]
+            if self.pieceSelect == " ":
+                pass
+            else:
+                lastItem = None
+                preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
+                if preshot == None or not(preshot):
+                    self.firstClick = True
+                    showinfo("aled", "Vous ne pouvez pas jouer cette piece")
+                else:
+                    self.firstClick = False
+                    for item in preshot:
+                        self.plateau.create_rectangle(item[0]-25,item[1]-25,item[0]+25,item[1]+25,outline=item[2], width="5")
+        else:
+            preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
+            if listXYR not in preshot and listXYG not in preshot:
+                print('mauvaise case')
+                pass
+            else:
+                self.pieceSelect.setX(x)
+                self.pieceSelect.setY(y)
+                index = self.listPosition.index(listXY)
+                for key, value in self.dicoJeux.items():
+                    if value == self.pieceSelect:
+                        self.dicoJeux[key] = ' '
+                    elif key == index:
+                        self.dicoJeux[key] = self.pieceSelect
+
+                self.creationPlateau()
+                self.firstClick = True
+                pass
+        
+    def creationPlateau(self, newDico = None):
+        self.plateau.delete(ALL)
+        self.plateau.pack()
+
+        for l in range(0, 8):
+            for c in range(0, 8):
+                if (l+c)%2 == 0:
+                    fill = 'black'
+                else:
+                    fill = 'white'
+                self.plateau.create_rectangle(l*50,c*50,l*50+50,c*50+50,fill=fill)
+        
+        for value in self.dicoJeux.values():
+            if value == ' ':
+                pass
+            else:
+                self.plateau.create_image(
+                    value.positionX ,
+                    value.positionY, 
+                    image = value.image)
+
+                
+                

@@ -87,7 +87,7 @@ class Plateau:
                          56:self.tourNA,57:self.cavalierNB,58:self.fouNC,59:self.reineN,60:self.roiN,61:self.fouNF,62:self.cavalierNG,63:self.tourNH}
         for i in range(16,48):
             self.dicoJeux[i] = ' '
-        self.dicoJeux = OrderedDict(sorted(self.dicoJeux.items(), key=lambda t: t[0]))
+
 
         self.listPosition= []
         for y in range(0, 8):
@@ -140,7 +140,13 @@ class Plateau:
 
                 self.creationPlateau()
                 self.firstClick = True
-                pass
+                roiFound = False
+                for key, value in self.dicoJeux.items():
+                    if value == self.roiN:
+                        roiFound = True
+                
+                if roiFound == False:
+                    showinfo("aled", "le roi est mort")
         
     def creationPlateau(self, newDico = None):
         self.plateau.delete(ALL)

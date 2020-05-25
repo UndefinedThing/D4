@@ -26,47 +26,52 @@ class Pieces:
     def preshot(self, dicoJeux, listPosition):
         #verif Pion
         if self.type == "pion":
+            res = []
+            temp = []
             if self.couleur == "blanc":
-                if (self.positionY == 75):
-                    res = [[self.positionX, self.positionY+50],[self.positionX, self.positionY+100]]
-                    for i in range(len(res)):
-                        if dicoJeux[listPosition.index(res[i])] == " ":
-                            res[i].append('green')
-                        elif dicoJeux[listPosition.index(res[i])].couleur == self.couleur:
-                            del res[i]
-                        else:
-                            del res[i+1]
-                            res[i].append('red')
-                            break
-                else:
-                    res = [[self.positionX, self.positionY+50]]
-                    if dicoJeux[listPosition.index(res[0])] == " ":
-                        res[0].append('green')
-                    elif dicoJeux[listPosition.index(res[0])].couleur == self.couleur:
-                        del res[0]
-                    else:
-                        del res[0]
-                        res[0].append('red')
-
+                temp = [[self.positionX, self.positionY+50],[self.positionX, self.positionY+100], [self.positionX+50, self.positionY+50],[self.positionX-50, self.positionY+50]]
             else:
-                if (self.positionY == 325):
-                    res = [[self.positionX, self.positionY-50],[self.positionX, self.positionY-100]]
-                    for i in range(len(res)):
-                        if dicoJeux[listPosition.index(res[i])] == " ":
-                            res[i].append('green')
-                        elif dicoJeux[listPosition.index(res[i])].couleur == self.couleur:
-                            del res[i]
+                temp = [[self.positionX, self.positionY-50],[self.positionX, self.positionY-100], [self.positionX+50, self.positionY-50],[self.positionX-50, self.positionY-50]]
+
+            devant = False
+            if temp[0] in listPosition:
+                if (self.positionY == 75 or self.positionY == 325):
+                        if dicoJeux[listPosition.index(temp[0])] == " ":
+                            temp[0].append('green')
+                            res.append(temp[0])
+                        elif dicoJeux[listPosition.index(temp[0])].couleur == self.couleur:
+                            devant = True
                         else:
-                            res[i].append('red')
+                            devant = True
+
+                        if devant == True:
+                            pass
+                        else:
+                            if dicoJeux[listPosition.index(temp[1])] == " ":
+                                temp[1].append('green')
+                                res.append(temp[1])
+                            elif dicoJeux[listPosition.index(temp[1])].couleur == self.couleur:
+                                pass
+                            else:
+                                pass
                 else:
-                    res = [[self.positionX, self.positionY-50]]
-                    if dicoJeux[listPosition.index(res[0])] == " ":
-                        res[0].append('green')
-                    elif dicoJeux[listPosition.index(res[0])].couleur == self.couleur:
-                        del res[0]
+                    if dicoJeux[listPosition.index(temp[0])] == " ":
+                        temp[0].append('green')
+                        res.append(temp[0])
+                    elif dicoJeux[listPosition.index(temp[0])].couleur == self.couleur:
+                        pass
                     else:
-                        res[0].append('red')
+                        pass
             
+            for i in range(2,4):
+                if temp[i] in listPosition:
+                    if dicoJeux[listPosition.index(temp[i])] == " " or dicoJeux[listPosition.index(temp[i])].couleur == self.couleur:
+                        pass
+                    else:
+                        temp[i].append('red')
+                        res.append(temp[i])
+
+                        
             return res #return
 
         #verif Tour
@@ -79,62 +84,62 @@ class Pieces:
             
             for i in range(1,8): 
                 if Droite == False:
-                    aled = [self.positionX+i*50, self.positionY]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX+i*50, self.positionY]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             Droite = True 
                         else:
                             Droite = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
                             
                 if Gauche == False:
-                    aled = [self.positionX-i*50, self.positionY]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX-i*50, self.positionY]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             Gauche = True 
                         else:
                             Gauche = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 if Bas == False:
-                    aled = [self.positionX, self.positionY+i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX, self.positionY+i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             Bas = True 
                         else:
                             Bas = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 if Haut == False:
-                    aled = [self.positionX, self.positionY-i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX, self.positionY-i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             Haut = True 
                         else:
                             Haut = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
             return res
 
         #verif Cavalier
         elif self.type == "cavalier":
             res=[]
-            aled = [[self.positionX+100, self.positionY+50],
+            temp = [[self.positionX+100, self.positionY+50],
                     [self.positionX+100, self.positionY-50],
                     [self.positionX-100, self.positionY+50],
                     [self.positionX-100, self.positionY-50],
@@ -142,7 +147,7 @@ class Pieces:
                     [self.positionX+50, self.positionY-100],
                     [self.positionX-50, self.positionY+100],
                     [self.positionX-50, self.positionY-100]]
-            for item in aled:
+            for item in temp:
                 if item in listPosition :
                     if dicoJeux[listPosition.index(item)] == " ":
                         item.append('green')
@@ -165,56 +170,56 @@ class Pieces:
             
             for i in range(1,8): 
                 if DBD == False:
-                    aled = [self.positionX+i*50, self.positionY+i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX+i*50, self.positionY+i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             DBD = True 
                         else:
                             DBD = True
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
                             
                 if DHG == False:
-                    aled = [self.positionX-i*50, self.positionY-i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX-i*50, self.positionY-i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             DHG = True 
                         else:
                             DHG = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 if DHD == False:
-                    aled = [self.positionX+i*50, self.positionY-i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX+i*50, self.positionY-i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             DHD = True 
                         else:
                             DHD = True
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 if DBG == False:
-                    aled = [self.positionX-i*50, self.positionY+i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX-i*50, self.positionY+i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             DBG = True 
                         else:
                             DBG = True
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
             return res
         
         #verif reine
@@ -232,116 +237,116 @@ class Pieces:
             for i in range(1,8):
                 #Vertical/horizontal ---------------------------------------------------------------------------------
                 if Droite == False:
-                    aled = [self.positionX+i*50, self.positionY]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX+i*50, self.positionY]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             Droite = True 
                         else:
                             Droite = True
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
                             
                 if Gauche == False:
-                    aled = [self.positionX-i*50, self.positionY]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX-i*50, self.positionY]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             Gauche = True 
                         else:
                             Gauche = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 if Bas == False:
-                    aled = [self.positionX, self.positionY+i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX, self.positionY+i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             Bas = True 
                         else:
                             Bas = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 if Haut == False:
-                    aled = [self.positionX, self.positionY-i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX, self.positionY-i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             Haut = True 
                         else:
                             Haut = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 #Diagonal ------------------------------------------------------------------------------------
                 if DBD == False:
-                    aled = [self.positionX+i*50, self.positionY+i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX+i*50, self.positionY+i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             DBD = True 
                         else:
                             DBD = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
                             
                 if DHG == False:
-                    aled = [self.positionX-i*50, self.positionY-i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX-i*50, self.positionY-i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             DHG = True 
                         else:
                             DHG = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 if DHD == False:
-                    aled = [self.positionX+i*50, self.positionY-i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX+i*50, self.positionY-i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             DHD = True 
                         else:
                             DHD = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
 
                 if DBG == False:
-                    aled = [self.positionX-i*50, self.positionY+i*50]
-                    if aled in listPosition :
-                        if dicoJeux[listPosition.index(aled)] == " ":
-                            aled.append('green')
-                            res.append(aled)
-                        elif dicoJeux[listPosition.index(aled)].couleur == self.couleur:
+                    temp = [self.positionX-i*50, self.positionY+i*50]
+                    if temp in listPosition :
+                        if dicoJeux[listPosition.index(temp)] == " ":
+                            temp.append('green')
+                            res.append(temp)
+                        elif dicoJeux[listPosition.index(temp)].couleur == self.couleur:
                             DBG = True 
                         else:
                             DBG = True 
-                            aled.append('red')
-                            res.append(aled)
+                            temp.append('red')
+                            res.append(temp)
             return res
             
         
         #verif Roi
         elif self.type == "roi":
             res = []
-            aled = [[self.positionX+50, self.positionY],
+            temp = [[self.positionX+50, self.positionY],
                     [self.positionX-50, self.positionY],
                     [self.positionX, self.positionY-50],
                     [self.positionX, self.positionY+50],
@@ -349,7 +354,7 @@ class Pieces:
                     [self.positionX-50, self.positionY-50],
                     [self.positionX+50, self.positionY-50],
                     [self.positionX-50, self.positionY+50]]
-            for item in aled:
+            for item in temp:
                 if item in listPosition :
                     if dicoJeux[listPosition.index(item)] == " ":
                         item.append('green')

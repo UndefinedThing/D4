@@ -1,4 +1,4 @@
-from client-Network import Network
+from client_Network import Network
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *

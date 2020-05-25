@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 from datetime import datetime
 
-from server-passwords import *
+from server_passwords import *
 
 def checkConn(dbconn):
     try:

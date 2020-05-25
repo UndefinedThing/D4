@@ -1,7 +1,7 @@
 import socket
 from _thread import *
 import sys
-from server-db_dialog import *
+from server_db_dialog import *
 
 def threaded_client(conn):
     conn.send(str.encode("Connected"))

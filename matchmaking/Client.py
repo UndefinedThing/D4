@@ -1,86 +1,47 @@
-import pygame
 from Network import Network
+import select
+import socket
+import sys
+from utils import Room, Hall, Player
+import utils
 
-width = 500
-height = 500
-win = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Client")
-
-clientNumber = 0
-
-
-class Player():
-    def __init__(self, x, y, width, height, color):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.color = color
-        self.rect = (x, y, width, height)
-        self.vel = 3
-
-    def draw(self, win):
-        pygame.draw.rect(win, self.color, self.rect)
-
-    def move(self):
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.key.K_LEFT]:
-            self.x -= self.vel
-
-        if keys[pygame.key.K_RIGHT]:
-            self.x += self.vel
-
-        if keys[pygame.key.K_UP]:
-            self.y -= self.vel
-
-        if keys[pygame.key.K_DOWN]:
-            self.y += self.vel
-
-        self.update()
-
-    def update(self):
-        self.rect = (self.x, self.y, self.width, self.height)
+n = Network()
+server_connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server_connection.connect((n.server, n.port))
 
 
-def read_pos(str):
-    str = str.split(",")
-    return int(str[0]), int(str[1])
+def prompt():
+    print('>', end=' ', flush=True)
 
 
-def make_pos(tup):
-    return str(tup[0]) + "," + str(tup[1])
+msg_prefix = ''
 
+socket_list = [server_connection]
+print(socket_list)
 
-def redrawWindow(win, player, player2):
-    win.fill((255, 255, 255))
-    player.draw(win)
-    player2.draw(win)
-    pygame.display.update()
+while True:
+    read_sockets, write_sockets, error_sockets = select.select(
+        socket_list, [], [])
+    for s in read_sockets:
+        if s is server_connection:  # incoming message
+            msg = s.recv(4096)
+            if not msg:
+                print("Server down!")
+                sys.exit(2)
+            else:
+                if msg == utils.QUIT_STRING.encode():
+                    sys.stdout.write('Bye\n')
+                    sys.exit(2)
+                else:
+                    sys.stdout.write(msg.decode())
+                    if 'Please tell us your name' in msg.decode():
+                        msg_prefix = 'name: '  # identifier for name
+                    else:
+                        msg_prefix = ''
+                    prompt()
+                    input()
 
-
-def main():
-    run = True
-    n = Network()
-    startPos = read_pos(n.getPos())
-    p = Player(startPos[0], startPos[1], 100, 100, (0, 255, 0))
-    p2 = Player(0, 0, 100, 100, (255, 0, 0))
-    clock = pygame.time.Clock()
-
-    while run:
-        clock.tick(60)
-        p2Pos = read_pos(n.send(make_pos((p.x, p.y))))
-        p2.x = p2Pos[0]
-        p2.y = p2Pos[1]
-        p2.update()
-
-        for event in pygame.event.get():
-            if event.type == pygame.event.QUIT:
-                run = False
-                pygame.event.quit()
-
-        p.move()
-        redrawWindow(win, p, p2)
-
-
-main()
+        else:
+            msg = msg_prefix + sys.stdin.readline()
+            server_connection.sendall(msg.encode())

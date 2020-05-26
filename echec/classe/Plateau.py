@@ -3,31 +3,17 @@ from tkinter.messagebox import showinfo
 import classe
 from classe import Pieces
 from PIL import ImageTk, Image
-from collections import OrderedDict
 
 
 class Plateau:
-    """
-        -plateau
-    """
 
     def __init__(self, window):
         self.window = window
-        self.firstClick = True
         self.plateau = Canvas(window, width =400, height =400, bg ='white')
-        self.plateau.delete(ALL)
-        self.plateau.pack()
         self.quiJoue = "blanc"
+        self.firstClick = True
 
-        for l in range(0, 8):
-            for c in range(0, 8):
-                if (l+c)%2 == 0:
-                    fill = 'black'
-                else:
-                    fill = 'white'
-                self.plateau.create_rectangle(l*50,c*50,l*50+50,c*50+50,fill=fill)
-
-        "=================================================================BLANC==================================================================================="
+        #=================================================================BLANC===================================================================================
         
         "Tour"
         self.tourBA = Pieces.Pieces('tour', 'blanc', 25,25)
@@ -55,7 +41,7 @@ class Plateau:
         self.pionBG = Pieces.Pieces('pion','blanc',325,75)
         self.pionBH = Pieces.Pieces('pion','blanc',375,75)
 
-        "=================================================================NOIR==================================================================================="
+        #=================================================================NOIR===================================================================================
     
         "Tour"
         self.tourNA = Pieces.Pieces('tour','noir', 25,375)
@@ -83,6 +69,7 @@ class Plateau:
         self.pionNG = Pieces.Pieces('pion','noir',325,325)
         self.pionNH = Pieces.Pieces('pion','noir',375,325)
         
+        #initialisation du dictionnaire du plateau
         self.dicoJeux = {0:self.tourBA,1:self.cavalierBB,2:self.fouBC,3:self.reineB,4:self.roiB,5:self.fouBF,6:self.cavalierBG,7:self.tourBH,
                          8:self.pionBA,9:self.pionBB,10:self.pionBC,11:self.pionBD,12:self.pionBE,13:self.pionBF,14:self.pionBG,15:self.pionBH,
                          48:self.pionNA,49:self.pionNB,50:self.pionNC,51:self.pionND,52:self.pionNE,53:self.pionNF,54:self.pionNG,55:self.pionNH,
@@ -90,7 +77,7 @@ class Plateau:
         for i in range(16,48):
             self.dicoJeux[i] = ' '
 
-
+        #Liste des differente position avec coordonnées
         self.listPosition= []
         for y in range(0, 8):
             y = y*50+25
@@ -98,6 +85,8 @@ class Plateau:
                 x = x*50+25
                 self.listPosition.append([x,y])
         self.pieceSelect = None
+
+        #Création du plateau
         self.creationPlateau(self.dicoJeux)
 
     def change(self):
@@ -116,6 +105,7 @@ class Plateau:
         listXY = [x,y]
         listXYR = [x,y,'red']
         listXYG = [x,y,'green']
+        #Selection de la piece à déplacer
         if self.firstClick == True:
             self.pieceSelect = self.dicoJeux[self.listPosition.index(listXY)]
             if self.pieceSelect == " ":
@@ -132,6 +122,8 @@ class Plateau:
                     self.firstClick = False
                     for item in preshot:
                         self.plateau.create_rectangle(item[0]-25,item[1]-25,item[0]+25,item[1]+25,outline=item[2], width="5")
+        
+        #Selection de la case où déplacer la piece
         else:
             preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
             if listXYR not in preshot and listXYG not in preshot:
@@ -158,6 +150,7 @@ class Plateau:
                     showinfo("aled", "le roi est mort")
                 self.change()
         
+    #Fonction pour creer le plateau
     def creationPlateau(self, newDico = None):
         self.plateau.delete(ALL)
         self.plateau.pack()

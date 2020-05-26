@@ -9,15 +9,13 @@ import sched, time
 mail_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 n = Network()
 
-root = Tk()
-root.geometry('660x440')
-root.title("D4 Client")
-
 conPassword = True
 regPassword = True
 regSamePassword = True
 
-class App(object):
+User = []
+
+class conRegPage:
     def __init__(self,root):
         self.root = root
 
@@ -45,6 +43,9 @@ class App(object):
         # -> Calls method to check if client is connected to server
         self.checkConn()
 
+        # -> Aled
+        self.button1 = Button(self.root, text='New Window', width=25, command=self.new_window)
+        self.button1.grid()
         # -> Initialize Quit button for client
         button_quit = Button(self.root, text="Quitter", command=self.connect.quit)
         button_quit.grid(row=2, column=2, padx=20, pady=20)
@@ -172,7 +173,7 @@ class App(object):
             self.username.configure(bg="white")
             self.password.configure(bg="white")
 
-            data = "connect/"+username+"/"+password
+            data = "connect///"+username+"///"+password
 
             response = self.trySendServer(data)
 
@@ -222,7 +223,7 @@ class App(object):
             self.registerPassword.configure(bg="white")
             self.registerSamePassword.configure(bg="white")
 
-            data = "register/"+email+"/"+username+"/"+password
+            data = "register///"+email+"///"+username+"///"+password
             response = self.trySendServer(data)
 
             if response[0] == "1" or response[0] == "2":
@@ -235,7 +236,7 @@ class App(object):
         except Exception as e :
             self.registerError.configure(text=e, bg="red")
             print(e)
-    
+
     def trySendServer(self, data):
         if self.checkConn():
             aled = n.send(data)
@@ -243,5 +244,50 @@ class App(object):
         else:
             return ["500","La connexion au serveur a échoué"]
 
-app = App(root)
-root.mainloop()
+    def new_window(self):
+        global User
+
+        User = [1,2,3]
+
+        self.root.withdraw()
+        main()
+
+class mainPage:
+    def __init__(self,root):
+        self.root = root
+
+        Label(self.root, text="Nom de compte").grid()
+        
+        # -> Initialize Disconnect button for client
+        button_quit = Button(self.root, text="Quitter", command=lambda : self.quitter())
+        button_quit.grid(row=2, column=2, padx=20, pady=20)
+
+        # -> Initialize Quit button for client
+        button_quit = Button(self.root, text="Quitter", command=lambda : self.quitter())
+        button_quit.grid(row=2, column=2, padx=20, pady=20)
+
+        # -> Save default background color in variable
+        self.orig_color = button_quit.cget("background")
+
+    def quitter(self):
+        global User
+
+        User = []
+        self.root.destroy()
+        main()
+
+def main():
+    root = Tk()
+    root.title("D4 Client")
+
+    if not User:
+        root.geometry('680x440')
+        app = conRegPage(root)
+    else :
+        root.geometry('980x440')
+        app = mainPage(root)
+        
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()

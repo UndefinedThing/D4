@@ -17,7 +17,7 @@ def threaded_client(conn):
             data = conn.recv(2048)
             reply = data.decode("utf-8")
 
-            treated = reply.split("/")
+            treated = reply.split("///")
 
             if treated[0] == "connect" :
                 conn.send(str.encode(usersConnection(dbConn, treated[1], treated[2])))

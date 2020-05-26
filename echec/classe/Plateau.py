@@ -17,6 +17,8 @@ class Plateau:
         self.plateau = Canvas(window, width =400, height =400, bg ='white')
         self.plateau.delete(ALL)
         self.plateau.pack()
+        self.quiJoue = "blanc"
+
         for l in range(0, 8):
             for c in range(0, 8):
                 if (l+c)%2 == 0:
@@ -98,6 +100,12 @@ class Plateau:
         self.pieceSelect = None
         self.creationPlateau(self.dicoJeux)
 
+    def change(self):
+        if self.quiJoue == "blanc":
+            self.quiJoue = "noir"
+        else:
+            self.quiJoue = "blanc"
+
     def select(self, event):
         x = event.x
         y = event.y
@@ -108,11 +116,12 @@ class Plateau:
         listXY = [x,y]
         listXYR = [x,y,'red']
         listXYG = [x,y,'green']
-        print(listXYG)
         if self.firstClick == True:
             self.pieceSelect = self.dicoJeux[self.listPosition.index(listXY)]
             if self.pieceSelect == " ":
                 pass
+            elif self.pieceSelect.couleur != self.quiJoue:
+                showinfo("aled", "c'est pas ton tour")
             else:
                 lastItem = None
                 preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
@@ -147,6 +156,7 @@ class Plateau:
                 
                 if roiFound == False:
                     showinfo("aled", "le roi est mort")
+                self.change()
         
     def creationPlateau(self, newDico = None):
         self.plateau.delete(ALL)

@@ -1,8 +1,8 @@
 import sqlite3
+
 from sqlite3 import Error
 from datetime import datetime
-
-from passwords import *
+from interfaceClient.passwords import *
 
 def checkConn(dbconn):
     try:

@@ -1,16 +1,16 @@
 from _thread import *
-from db_dialog import *
+from interfaceClient.db_dialog import *
 
 import socket
 import sys
 import pickle
-import utils as utl
+import interfaceClient.utils as utl
 
 def threaded_client(conn):
     conn.send(str.encode("Connected"))
 
     # connexion db
-    dbConn = create_connection(r"projetBdd.db")
+    dbConn = create_connection(r"interfaceClient\\projetBdd.db")
 
     print(checkConn(dbConn))
 
@@ -51,22 +51,23 @@ def threaded_client(conn):
     print("Lost connection")
     conn.close()
 
-server = "localhost"
-port = 5555
+def main():
+    server = "localhost"
+    port = 5555
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-try:
-    s.bind((server, port))
-except socket.error as e:
-    str(e)
+    try:
+        s.bind((server, port))
+    except socket.error as e:
+        str(e)
 
-s.listen(10)
-print("Waiting for a connection, Server Started")
+    s.listen(10)
+    print("Waiting for a connection, Server Started")
 
-while True:
-    conn, addr = s.accept()
-    print("Connection from :", addr)
+    while True:
+        conn, addr = s.accept()
+        print("Connection from :", addr)
 
-    start_new_thread(threaded_client, (conn,))
+        start_new_thread(threaded_client, (conn,))

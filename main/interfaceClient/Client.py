@@ -17,8 +17,8 @@ regPassword = True
 regSamePassword = True
 
 User = []
-
 roomsList = []
+inRoom = ""
 
 class conRegPage:
     def __init__(self,root):
@@ -390,11 +390,16 @@ def main():
     root = Tk()
     root.title("D4 Client")
 
-    if not User:
+    if not User and inRoom == "":
         root.geometry('680x460')
         app = conRegPage(root)
-    else :
+    elif User and (inRoom == "") :
         root.geometry('980x440')
         app = mainPage(root)
-        
+    elif User and (inRoom != "") :
+        print("Connected to room")
+    else :
+        print("aled")
+        sys.exit()
+
     root.mainloop()

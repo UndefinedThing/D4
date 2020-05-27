@@ -1,4 +1,5 @@
-from Network import Network
+import interfaceClient
+from interfaceClient.Network import Network
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
@@ -397,6 +398,3 @@ def main():
         app = mainPage(root)
         
     root.mainloop()
-
-if __name__ == "__main__":
-    main()

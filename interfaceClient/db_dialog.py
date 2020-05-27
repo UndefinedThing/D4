@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 from datetime import datetime
 
-from server_passwords import *
+from passwords import *
 
 def checkConn(dbconn):
     try:
@@ -29,17 +29,19 @@ def usersConnection(dbconn, username, password) :
     try:
         cur = dbconn.cursor()
 
-        cur.execute("SELECT * FROM Users WHERE username=?", (username,))
+        cur.execute("SELECT id, email, username, password, wins, looses, draws, created_at FROM Users WHERE username=?", (username,))
         user = cur.fetchone()
-        
+
         cur.close()
 
         if (user is None):
-            return "Aucun utilisateur ne correspond"
+            return "3///Aucun utilisateur ne correspond"
         elif (user is not None) and not verify_password(password, str(user[3])):
-            return "Mot de passe incorrect"
+            return "3///Mot de passe incorrect"
         else :
-            return '.'.join(str(v) for v in user)
+            userInf = list(user)
+            userInf.pop(3)
+            return "0///"+"///".join(str(v) for v in userInf)
 
     except Error as e:
         print("Error while parsing database",e)
@@ -64,30 +66,13 @@ def userRegister(dbconn, newMail, newUsername, passwd) :
 
         timestamp = datetime.now()
         cur.execute(query, (newMail, newUsername, hash_password(passwd), timestamp, timestamp,))
-        cur.execute("SELECT * FROM Users WHERE username=?", (newUsername,))
+        cur.execute("SELECT id, email, username, wins, looses, draws, created_at FROM Users WHERE username=?", (newUsername,))
         user = cur.fetchone()
-
-        print(user[2])
 
         dbconn.commit()
         cur.close()
 
         return "0///"+'///'.join(str(v) for v in user)
 
-    except Error as e:
-        print("Error while parsing database",e)
-
-def select_all(dbconn, table):
-    try:
-        cur = dbconn.cursor()
-        sql_query = """select * from %s"""
-        cur.execute(sql_query % (table))
-
-        rows = cur.fetchall()
-
-        for row in rows:
-            print(row)
-        
-        cur.close()
     except Error as e:
         print("Error while parsing database",e)

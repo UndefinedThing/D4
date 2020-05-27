@@ -1,9 +1,11 @@
-from client_Network import Network
+from Network import Network
 from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
-import re
+from tkinter.simpledialog import *
 
+import re
+import sys
 import sched, time
 
 mail_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
@@ -14,6 +16,8 @@ regPassword = True
 regSamePassword = True
 
 User = []
+
+roomsList = []
 
 class conRegPage:
     def __init__(self,root):
@@ -43,9 +47,6 @@ class conRegPage:
         # -> Calls method to check if client is connected to server
         self.checkConn()
 
-        # -> Aled
-        self.button1 = Button(self.root, text='New Window', width=25, command=self.new_window)
-        self.button1.grid()
         # -> Initialize Quit button for client
         button_quit = Button(self.root, text="Quitter", command=self.connect.quit)
         button_quit.grid(row=2, column=2, padx=20, pady=20)
@@ -55,7 +56,7 @@ class conRegPage:
 
     ############### METHODS USED ###############
     def initConnect(self):
-        Label(self.connect, text="Se connecter").grid()
+        Label(self.connect, text="Se connecter", font = "Verdana 16 bold").grid()
 
         self.connectError = Label(self.connect, state="disabled")
         self.connectError.grid()
@@ -83,8 +84,7 @@ class conRegPage:
         self.user.grid()
 
     def initRegister(self) :
-        Label(self.register, text="S'enregister").grid()
-
+        Label(self.register, text="S'enregister", font = "Verdana 16 bold").grid()
         self.registerError = Label(self.register, state="disabled")
         self.registerError.grid()
 
@@ -180,7 +180,8 @@ class conRegPage:
             if response[0] == "500" :
                 showerror("Une erreur est survenue", response[1])
             else :
-                print(response)
+                response.pop(0)
+                self.toMain(response)
 
         except Exception as e :
             self.connectError.configure(text=e, bg="red")
@@ -231,7 +232,10 @@ class conRegPage:
                 self.registerUser.configure(text="", bg=self.orig_color)
             else :
                 self.registerError.configure(text="", bg=self.orig_color)
-                self.registerUser.configure(text="Votre compte a bien été créé !\n Vous pouvez maintenant vous connecter")
+                self.registerUser.configure(text="Votre compte a bien été créé !")
+                time.sleep(2)
+                response.pop(0)
+                self.toMain(response)
 
         except Exception as e :
             self.registerError.configure(text=e, bg="red")
@@ -244,10 +248,10 @@ class conRegPage:
         else:
             return ["500","La connexion au serveur a échoué"]
 
-    def new_window(self):
+    def toMain(self, userData):
         global User
 
-        User = [1,2,3]
+        User = userData
 
         self.root.withdraw()
         main()
@@ -256,32 +260,137 @@ class mainPage:
     def __init__(self,root):
         self.root = root
 
-        Label(self.root, text="Nom de compte").grid()
+        ############### Init frames info + rooms ###############
+        # -> User's info
+        self.user = Frame(self.root)
+        self.user.grid(row=1, column=0, columnspan=2, sticky=(W,E), padx=20, pady=20)
+
+        # -> Vertical Separator
+        ttk.Separator(self.root, orient=VERTICAL).grid(column=2, row=1, rowspan=1, sticky=NS)
+
+        # -> Room's frame
+        self.rooms = Frame(self.root)
+        self.rooms.grid(row=1, column=3, columnspan=2, sticky=(W,E), padx=20, pady=20)
+
+        ############### Fill previously created frames ###############
+        self.initUser()
+        self.initRooms()
         
         # -> Initialize Disconnect button for client
-        button_quit = Button(self.root, text="Quitter", command=lambda : self.quitter())
-        button_quit.grid(row=2, column=2, padx=20, pady=20)
+        button_disc = Button(self.root, text="Déconnecter", command=lambda : self.quitter('disc'))
+        button_disc.grid(row=3, column=1, padx=20, pady=20)
 
         # -> Initialize Quit button for client
-        button_quit = Button(self.root, text="Quitter", command=lambda : self.quitter())
-        button_quit.grid(row=2, column=2, padx=20, pady=20)
+        button_quit = Button(self.root, text="Quitter", command=lambda : self.quitter('quit'))
+        button_quit.grid(row=3, column=2, padx=20, pady=20)
+
+        button_ref_room = Button(self.root, text="Rafraichir", command=lambda : self.initRooms())
+        button_ref_room.grid(row=3, column=3, padx=20, pady=20)
+        button_room = Button(self.root, text="+", command=lambda : self.createRoom( askstring("Input", "Quel nom à la room ?", parent=self.root) ))
+        button_room.grid(row=3, column=4, padx=20, pady=20)
 
         # -> Save default background color in variable
         self.orig_color = button_quit.cget("background")
 
-    def quitter(self):
+    def initUser(self) :
+        ############# User's info #############
+        # -> Account label
+        Label(self.user, text="Compte", font = "Verdana 16 bold").grid()
+
+        # -> Email
+        Label(self.user, text="Adresse mail :").grid()
+        Label(self.user, text=User[1]).grid()
+        
+        # -> Username
+        Label(self.user, text="Nom de compte").grid()
+        Label(self.user, text=User[2]).grid()
+
+    def initRooms(self) :
+        global roomsList
+
+        for element in self.rooms.winfo_children() :
+            element.destroy()
+
+        ############# User's info #############
+        # -> Rooms label
+        Label(self.rooms, text="Rooms", font = "Verdana 16 bold").grid()
+
+        # -> Room's list
+        self.roomsList = Canvas(self.rooms, width=360, height=100, background="white", scrollregion=(0,0,0,0))
+        self.roomsList.grid_columnconfigure(5)
+        self.roomsList.grid()
+
+        # -> Receive rooms
+        response = self.trySendServer("getRooms///raw")
+
+        if response[0] == "500" :
+            showerror("Une erreur est survenue", response[1])
+        else :
+            try :
+                roomsList = response[1:][0]
+            except :
+                Label(self.rooms, text="No rooms :(").grid()
+        
+        # -> Utils call rooms => return rooms[]
+        if not roomsList :
+            Label(self.rooms, text="No rooms :(").grid()
+        else :
+            for room in roomsList:
+                button = Button(self.roomsList, name=room[0], width=64, text=room[0])
+                button.bind("<Button-1>", lambda event: self.printElem(event))
+                button.grid()
+
+        self.roomsList.configure(scrollregion=self.roomsList.bbox("all"))
+
+    def printElem(self, event):
+        
+        print("Clicked ! :")
+        print(str(event.widget))
+        print(str(event.widget).split('.'))
+
+    def createRoom(self, name):
+        data = "createRoom///"+name
+
+        response = self.trySendServer(data)
+
+        if response[0] == "500" :
+            showerror("Une erreur est survenue", response[1])
+        else :
+            print(response)
+
+        self.initRooms()
+
+    def checkConn(self):
+        if (n.getPos() is None) :
+            return False
+        else :
+            return True
+
+    def trySendServer(self, data):
+        if self.checkConn():
+            aled = n.send(data)
+            if isinstance(aled, list):
+                return aled
+            else :
+                return aled.split('///')
+        else:
+            return ["500","La connexion au serveur a échoué"]
+
+    def quitter(self, com):
         global User
 
         User = []
         self.root.destroy()
-        main()
+
+        if com == "disc" : main();
+        if com == "quit" : sys.exit();
 
 def main():
     root = Tk()
     root.title("D4 Client")
 
     if not User:
-        root.geometry('680x440')
+        root.geometry('680x460')
         app = conRegPage(root)
     else :
         root.geometry('980x440')

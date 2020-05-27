@@ -47,10 +47,10 @@ class Pieces:
                         if devant == True:
                             pass
                         else:
-                            if dicoJeux[listPosition.index(temp[1])] == " ":
+                            if temp[1] in listPosition and dicoJeux[listPosition.index(temp[1])] == " ":
                                 temp[1].append('green')
                                 res.append(temp[1])
-                            elif dicoJeux[listPosition.index(temp[1])].couleur == self.couleur:
+                            elif temp[1] in listPosition and dicoJeux[listPosition.index(temp[1])].couleur == self.couleur:
                                 pass
                             else:
                                 pass

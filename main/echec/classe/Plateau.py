@@ -12,7 +12,8 @@ class Plateau:
         self.plateau = Canvas(window, width =400, height =400, bg ='white')
         self.quiJoue = "blanc"
         self.firstClick = True
-
+        self.MortBlanc = {}
+        self.MortNoir = {}
         #=================================================================BLANC===================================================================================
         
         "Tour"
@@ -127,7 +128,6 @@ class Plateau:
         else:
             preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
             if listXYR not in preshot and listXYG not in preshot:
-                print('mauvaise case')
                 pass
             else:
                 self.pieceSelect.setX(x)
@@ -137,23 +137,77 @@ class Plateau:
                     if value == self.pieceSelect:
                         self.dicoJeux[key] = ' '
                     elif key == index:
+                        if self.dicoJeux[key] == ' ':
+                            pass
+                        elif self.dicoJeux[key].couleur == "blanc":
+                            self.MortBlanc[tuple([self.dicoJeux[key].positionX,self.dicoJeux[key].positionY])] = self.dicoJeux[key]
+                        elif self.dicoJeux[key].couleur == "noir":
+                            self.MortNoir[tuple([self.dicoJeux[key].positionX,self.dicoJeux[key].positionY])] = self.dicoJeux[key]
                         self.dicoJeux[key] = self.pieceSelect
 
                 self.creationPlateau()
-                self.firstClick = True
-                roiFound = False
-                for key, value in self.dicoJeux.items():
-                    if value == self.roiN:
-                        roiFound = True
-                
-                if roiFound == False:
-                    showinfo("aled", "le roi est mort")
+                self.firstClick = True                
+                if self.roiB in self.MortBlanc.values():
+                    showinfo("aled", "le roi Blanc est mort")
+                elif self.roiN in self.MortNoir.values():
+                    showinfo("aled", "le roi Noir est mort")
+                self.checkPion()
                 self.change()
         
+
+    def checkPion(self):
+        aled = [0,1,2,3,4,5,6,7,63,62,61,60,59,58,57,56]
+        for i in aled:
+            if self.dicoJeux[i] != " " and self.dicoJeux[i].type == 'pion':
+                self.aled = [self.dicoJeux[i].positionX, self.dicoJeux[i].positionY]
+                self.plateau.destroy()
+                self.mort = Canvas(self.window, width =400, height =400, bg ='grey')
+                self.mort.pack()
+                self.mort.bind('<Button-1>', self.changementPieces)
+                if self.dicoJeux[i].couleur == "blanc":
+                    for value in self.MortBlanc.values():
+                        self.mort.create_image(
+                            value.positionX ,
+                            value.positionY, 
+                            image = value.image)
+                elif self.dicoJeux[i].couleur ==" noir":
+                    for value in self.MortNoir.values():
+                        self.mort.create_image(
+                            value.positionX ,
+                            value.positionY, 
+                            image = value.image)
+
+    def changementPieces(self, event):
+        x = event.x
+        y = event.y
+        x=event.x%50
+        x=(event.x-x)+25
+        y=event.y%50
+        y=(event.y-y)+25
+        listXY = tuple([x,y])
+        if listXY in self.MortBlanc.keys():
+            self.MortBlanc[listXY].positionX = self.aled[0]
+            self.MortBlanc[listXY].positionY = self.aled[1]
+            self.dicoJeux[self.listPosition.index(self.aled)] = self.MortBlanc[listXY]
+            del self.MortBlanc[listXY]
+            self.mort.destroy()
+            self.plateau = Canvas(self.window, width =400, height =400, bg ='white')
+            self.creationPlateau()
+
+        elif listXY in self.MortNoir:
+            self.MortNoir[listXY].positionX = self.aled[0]
+            self.MortNoir[listXY].positionY = self.aled[1]
+            self.dicoJeux[self.listPosition.index(self.aled)] = self.MortNoir[listXY]
+            del self.MortNoir[listXY]
+            self.mort.destroy()
+            self.plateau = Canvas(self.window, width =400, height =400, bg ='white')
+            self.creationPlateau()
+
     #Fonction pour creer le plateau
     def creationPlateau(self, newDico = None):
         self.plateau.delete(ALL)
         self.plateau.pack()
+        self.plateau.bind('<Button-1>', self.select)
 
         for l in range(0, 8):
             for c in range(0, 8):

@@ -42,7 +42,10 @@ def threaded_client(conn: socket):
                 connectString = usersConnection(dbConn, treated[1], treated[2])
                 connectTable = connectString.split("///")
 
+                print("CONNECT STRING : ", connectString)
+
                 if connectTable[0] == "0":
+                    print("va pas la")
                     player_list[connectTable[3]] = Player(connectTable[3], conn)
 
                 conn.send(str.encode(connectString))

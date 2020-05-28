@@ -178,8 +178,11 @@ class conRegPage:
 
             response = self.trySendServer(data)
 
-            if response[0] == "500" :
+            if response[0] == "500" or response[0] == "2" :
                 showerror("Une erreur est survenue", response[1])
+            elif response[0] == "3" :
+                self.username.configure(bg="red")
+                raise Exception("Aucun utilisateur ne correspond")
             else :
                 response.pop(0)
                 self.toMain(response)
@@ -245,7 +248,10 @@ class conRegPage:
     def trySendServer(self, data):
         if self.checkConn():
             aled = n.send(data)
-            return aled.split('///')
+            if isinstance(aled, list):
+                return aled
+            else :
+                return aled.split('///')
         else:
             return ["500","La connexion au serveur a échoué"]
 

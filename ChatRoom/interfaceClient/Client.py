@@ -470,9 +470,9 @@ class gamePage:
 
     def sendGentleMessage(self, message):
         data = "sendMessage///"+inRoom[0]+"///"+User[2]+"///"+message
-
+        print(data)
         response = self.trySendServer(data)
-
+        print(response)
         if response[0] == "500":
             showerror("Une erreur est survenue", response[1])
         elif response[0] == "0":

@@ -10,6 +10,7 @@ from interfaceClient.utils import Room, Player
 
 player_list = {}
 
+
 def threaded_client(conn: socket):
     global player_list
 
@@ -21,24 +22,27 @@ def threaded_client(conn: socket):
     while True:
         try:
             reply = ""
-            data = conn.recv(2048) # <- ERROR
+            data = conn.recv(2048)  # <- ERROR
             reply = data.decode("utf-8")
 
-            treated = reply.split("///") # <- Split request using defined separator to use headers
+            # <- Split request using defined separator to use headers
+            treated = reply.split("///")
 
-            if treated[0] == "isItWorking" :
+            if treated[0] == "isItWorking":
                 conn.send(str.encode("1"))
 
-            if treated[0] == "register" :
-                registerString = userRegister(dbConn, treated[1], treated[2], treated[3])
+            if treated[0] == "register":
+                registerString = userRegister(
+                    dbConn, treated[1], treated[2], treated[3])
                 registerTable = registerString.split("///")
 
                 if registerTable[0] == "0":
-                    player_list[registerTable[3]] = Player(registerTable[3], conn)
+                    player_list[registerTable[3]] = Player(
+                        registerTable[3], conn)
 
                 conn.send(str.encode(registerString))
 
-            if treated[0] == "connect" : 
+            if treated[0] == "connect":
                 connectString = usersConnection(dbConn, treated[1], treated[2])
                 connectTable = connectString.split("///")
 
@@ -46,41 +50,51 @@ def threaded_client(conn: socket):
 
                 if connectTable[0] == "0":
                     print("va pas la")
-                    player_list[connectTable[3]] = Player(connectTable[3], conn)
+                    player_list[connectTable[3]] = Player(
+                        connectTable[3], conn)
 
                 conn.send(str.encode(connectString))
 
-            if treated[0] == "createRoom" :
-                try :
+            if treated[0] == "createRoom":
+                try:
                     # create room
-                    if utl.createRoom(str(treated[1])).split("///")[0] == "0" :
+                    if utl.createRoom(str(treated[1])).split("///")[0] == "0":
                         # userName join room
-                        utl.getObjRoom(treated[1]).addPlayer(player_list.get(treated[2]))
+                        utl.getObjRoom(treated[1]).addPlayer(
+                            player_list.get(treated[2]))
 
-                    res = "0" + "///" + utl.getObjRoom(treated[1]).name + "///" + str(len(utl.getObjRoom(treated[1]).players))
+                    res = "0" + "///" + \
+                        utl.getObjRoom(
+                            treated[1]).name + "///" + str(len(utl.getObjRoom(treated[1]).players))
 
                     conn.send(str.encode(res))
                 except Error as e:
                     print('Some error occured line 33 : ', e)
-    
-            if treated[0] == "getRooms" :
+
+            if treated[0] == "getRooms":
                 res = ["0", utl.getRooms()]
                 roomsList = pickle.dumps(res)
                 conn.send(roomsList)
 
-            if treated[0] == "joinRoom" :
-                utl.getObjRoom(treated[1]).addPlayer(player_list.get(treated[2]))
-                res = "0" + "///" + utl.getObjRoom(treated[1]).name + "///" + str(len(utl.getObjRoom(treated[1]).players))
+            if treated[0] == "joinRoom":
+                utl.getObjRoom(treated[1]).addPlayer(
+                    player_list.get(treated[2]))
+                res = "0" + "///" + \
+                    utl.getObjRoom(treated[1]).name + "///" + \
+                    str(len(utl.getObjRoom(treated[1]).players))
                 conn.send(str.encode(res))
 
-            if treated[0] == "quitRoom" :
-                if utl.getObjRoom(treated[1]).removePlayer(player_list.get(treated[2])) :
+            if treated[0] == "quitRoom":
+                if utl.getObjRoom(treated[1]).removePlayer(player_list.get(treated[2])):
                     conn.send(str.encode("0///La room a été quittée"))
-                else :
+                else:
                     conn.send(str.encode("1///La room a été quittée"))
-            
-            if treated[0] == "sendMessage" :
-                utl.getObjRoom(treated[1]).broadcast(player_list.get(treated[2]), treated[3])
+
+            if treated[0] == "sendMessage":
+                utl.getObjRoom(treated[1]).broadcast(
+                    player_list.get(treated[2]), treated[3])
+                conn.send(pickle.dumps(
+                    "0///"+utl.getObjRoom(treated[1]).history))
 
             if not data:
                 print("Disconnected")
@@ -89,7 +103,8 @@ def threaded_client(conn: socket):
                 print("Received: ", reply)
                 print("Sending : ", reply)
 
-            print("================ END REQUEST ================\n=============================================")
+            print(
+                "================ END REQUEST ================\n=============================================")
 
             # conn.sendall(str.encode(reply))
         except Exception as e:
@@ -98,6 +113,7 @@ def threaded_client(conn: socket):
 
     print("Lost connection")
     conn.close()
+
 
 def main():
     server = "localhost"

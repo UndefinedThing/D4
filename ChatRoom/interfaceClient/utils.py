@@ -53,13 +53,12 @@ class Room(object):
     def welcome_new(self, from_player):
         msg = "Welcomes to " + from_player.name + 'in' + self.name + '\n'
         self.history.append(msg)
-        # for player in self.players:
-        #     player.socket.sendall(msg.encode())
+        return self.history
 
     def broadcast(self, from_player, msg):
         msg = from_player.name.encode() + ":" + msg
         self.history.append(msg)
-        # for player in self.players:
+        return self.history
 
 
 def createRoom(name):

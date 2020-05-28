@@ -7,8 +7,9 @@ from PIL import ImageTk, Image
 
 class Plateau:
 
-    def __init__(self, window):
+    def __init__(self, window, couleur):
         self.window = window
+        self.myCouleur = couleur
         self.plateau = Canvas(window, width =400, height =400, bg ='white')
         self.quiJoue = "blanc"
         self.firstClick = True

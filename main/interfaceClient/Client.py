@@ -21,6 +21,7 @@ regSamePassword = True
 User = []
 roomsList = []
 inRoom = []
+couleur = ""
 
 class conRegPage:
     def __init__(self,root):
@@ -415,13 +416,36 @@ class gamePage:
 
         self.root = root
 
-        Label(self.root, text="LE JEU" + str(inRoom[0]), font = "Verdana 16 bold").grid()
+        if inRoom[1] == "1" :
+            Label(self.root, text="En attente d'un second joueur\n" + str(inRoom[0]), font = "Verdana 16 bold").grid(padx=20, pady=20)
+            data = n.client.recv(2048).decode()
+            if data == "GOGOGO":
+                self.loadGame()
+        else :
+            self.loadGame()
 
         button_quit = Button(self.root, text="Quitter", command=lambda : self.quitRoom())
         button_quit.grid()
 
         # -> Save default background color in variable
         self.orig_color = self.root.cget("background")
+    
+    def loadGame(self) :
+        global inRoom, User, couleur
+        data = "whoAmI///"+inRoom[0]+"///"+User[2]
+
+        response = self.trySendServer(data)
+
+        if response[0] == "500" :
+            showerror("Une erreur est survenue", response[1])
+        elif response[0] == "0":
+            couleur = response[1]
+
+            self.root.destroy()
+
+            main()
+        else :
+            print("SOME ERROR OCCURED on LOAD")
 
     def quitRoom(self) :
         global inRoom
@@ -436,7 +460,7 @@ class gamePage:
             self.root.destroy()
             main()
         else :
-            print("SOME ERROR OCCURED")
+            print("SOME ERROR OCCURED quit")
 
     def checkConn(self):
         if (n.send("isItWorking") is None ) :
@@ -455,18 +479,23 @@ class gamePage:
             return ["500","La connexion au serveur a échoué"]
 
 def main():
+    global inRoom, couleur
+
     root = Tk()
     root.title("D4 Client")
 
-    if not User and not inRoom:
+    if not User:
         root.geometry('680x460')
         conRegPage(root)
-    elif User and (not inRoom) :
+    elif User and not inRoom :
         root.geometry('980x440')
         mainPage(root)
-    elif User and inRoom :
+    elif User and inRoom and not couleur:
         root.geometry('660x660')
-        Plateau(root)
+        gamePage(root)
+    elif User and inRoom and couleur:
+        root.geometry('660x660')
+        Plateau(root, couleur)
     else :
         print("aled")
         sys.exit()

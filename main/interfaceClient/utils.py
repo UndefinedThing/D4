@@ -31,12 +31,29 @@ class Room(object):
             if player.name == addedPlayer.name :
                 return "Already in"
 
-        try:
-            self.players.append(addedPlayer)
+        if len(self.players) < 2:
+            try:
+                if not self.players:
+                    self.players.append(addedPlayer)
+                else :
+                    self.players.append(addedPlayer)
+
+            except Exception as e:
+                print(e)
+                return "22///Une erreur est survenue"
+        
+        if len(self.players) == 2:
+            return "1///Le match débute"
+        else :
             return "0///Le joueur a bien été ajouté"
-        except Exception as e:
-            print(e)
-            return "22///Une erreur est survenue"
+        
+    def whichColor(self, player):
+        if self.players[0] == player :
+            return "0///blanc"
+        elif self.players[1] == player:
+            return "0///noir"
+        else :
+            return "0///spectateur"
 
     def removePlayer(self, player):
         try:

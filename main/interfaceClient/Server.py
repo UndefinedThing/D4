@@ -42,8 +42,6 @@ def threaded_client(conn: socket):
                 connectString = usersConnection(dbConn, treated[1], treated[2])
                 connectTable = connectString.split("///")
 
-                print("CONNECT STRING : ", connectString)
-
                 if connectTable[0] == "0":
                     print("va pas la")
                     player_list[connectTable[3]] = Player(connectTable[3], conn)
@@ -62,14 +60,16 @@ def threaded_client(conn: socket):
                     conn.send(str.encode(res))
                 except Error as e:
                     print('Some error occured line 33 : ', e)
-    
+
             if treated[0] == "getRooms" :
                 res = ["0", utl.getRooms()]
                 roomsList = pickle.dumps(res)
                 conn.send(roomsList)
 
             if treated[0] == "joinRoom" :
-                utl.getObjRoom(treated[1]).addPlayer(player_list.get(treated[2]))
+                if utl.getObjRoom(treated[1]).addPlayer(player_list.get(treated[2])).split('///')[0] == "1" :
+                    utl.getObjRoom(treated[1]).players[0].socket.sendall(str.encode("GOGOGO"))
+
                 res = "0" + "///" + utl.getObjRoom(treated[1]).name + "///" + str(len(utl.getObjRoom(treated[1]).players))
                 conn.send(str.encode(res))
 
@@ -78,6 +78,9 @@ def threaded_client(conn: socket):
                     conn.send(str.encode("0///La room a été quittée"))
                 else :
                     conn.send(str.encode("1///La room a été quittée"))
+
+            if treated[0] == "whoAmI" :
+                conn.send(str.encode(utl.getObjRoom(treated[1]).whichColor(player_list.get(treated[2]))))
 
             if not data:
                 print("Disconnected")

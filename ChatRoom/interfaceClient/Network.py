@@ -1,0 +1,31 @@
+import socket
+import pickle
+
+class Network:
+    def __init__(self):
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server = "localhost"
+        self.port = 5555
+        self.addr = (self.server, self.port)
+        self.pos = self.connect()
+
+    def getPos(self):
+        return self.pos
+
+    def connect(self):
+        try:
+            self.client.connect(self.addr)
+            return self.client.recv(2048).decode()
+        except:
+            pass
+
+    def send(self, data):
+        try:
+            self.client.send(str.encode(data))
+            a = self.client.recv(4096)
+            try :
+                return pickle.loads(a)
+            except :
+                return a.decode()
+        except socket.error as e:
+            print("Network error : ", e)

@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter.messagebox import showinfo
-import classe
-from classe import Pieces
+import echec.classe
+from echec.classe import Pieces
 from PIL import ImageTk, Image
 
 
@@ -217,16 +217,26 @@ class Plateau:
                     fill = 'black'
                 else:
                     fill = 'white'
+                
                 self.plateau.create_rectangle(l*50,c*50,l*50+50,c*50+50,fill=fill)
         
         for value in self.dicoJeux.values():
             if value == ' ':
                 pass
-            else:
-                self.plateau.create_image(
+            elif value.couleur == 'noir':
+                self.plateau.create_text(
                     value.positionX ,
                     value.positionY, 
-                    image = value.image)
+                    text = value.text,
+                    font = "Arial 20 bold",
+                    fill='red')
+            elif value.couleur == 'blanc':
+                self.plateau.create_text(
+                    value.positionX ,
+                    value.positionY, 
+                    text = value.text,
+                    font = "Arial 20 bold",
+                    fill='green')
 
                 
                 

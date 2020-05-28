@@ -10,12 +10,13 @@ class Pieces:
     """
 
     def __init__(self, type, couleur, positionX, positionY):
-        image = Image.open('./image/'+couleur+'/'+type+'.png')
-        self.image = ImageTk.PhotoImage(image)
+        #image = Image.open('./image/'+couleur+'/'+type+'.png')
+        #self.image = ImageTk.PhotoImage(image)
         self.couleur = couleur
         self.type = type
         self.positionX = positionX
         self.positionY = positionY
+        self.text = self.solutiondesecour()
     
     def setX(self, newX):
         self.positionX = newX
@@ -367,3 +368,30 @@ class Pieces:
             return res
         return None
             
+    def solutiondesecour(self):
+        if self.couleur == 'blanc':
+            if self.type == 'pion':
+                return 'PB'
+            elif self.type == 'tour':
+                return 'TB'
+            elif self.type == 'cavalier':
+                return 'CB'
+            elif self.type == 'fou':
+                return 'FB'
+            elif self.type == 'reine':
+                return 'RB'
+            elif self.type == 'roi':
+                return 'rB'
+        elif self.couleur == 'noir':
+            if self.type == 'pion':
+                return 'PN'
+            elif self.type == 'tour':
+                return 'TN'
+            elif self.type == 'cavalier':
+                return 'CN'
+            elif self.type == 'fou':
+                return 'FN'
+            elif self.type == 'reine':
+                return 'RN'
+            elif self.type == 'roi':
+                return 'rN'

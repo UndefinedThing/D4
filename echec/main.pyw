@@ -6,7 +6,7 @@ window = Tk()
 window.title("jeux d'echec")
 window.geometry("1080x720")
 
-plateau = Plateau.Plateau(window)
+Plateau.Plateau(window)
 
 window.mainloop()
 

@@ -56,7 +56,7 @@ class Room(object):
         return self.history
 
     def broadcast(self, from_player, msg):
-        msg = from_player.name.encode() + ":" + msg
+        msg = from_player.name + ":" + msg
         self.history.append(msg)
         return self.history
 

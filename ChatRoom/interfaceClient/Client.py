@@ -448,21 +448,20 @@ class gamePage:
 
         self.root = root
 
-        Label(self.root, text="LE JEU" +
-              str(inRoom[0]), font="Verdana 16 bold").grid(row=1, column=3, padx=20, pady=20)
+        Label(self.root, text="LE JEU" + str(inRoom[0]), font="Verdana 16 bold").grid(row=1, column=3, padx=20, pady=20)
 
-        canvas = Canvas(self.root, width=600, height=150, bg='white')
-        canvas.grid(row=2, columnspan=5, padx=20, pady=20)
+        self.canvas = Canvas(self.root, width=600, height=150, bg='white')
+        self.canvas.grid(row=2, columnspan=5, padx=20, pady=20)
+
+        self.canvas_id = self.canvas.create_text(10, 10, anchor="nw")
 
         self.wordsToSay = Entry(self.root, width=30)
         self.wordsToSay.grid(row=3, column=2, columnspan=3, padx=20, pady=20)
 
-        button_send = Button(self.root, text="Envoyer",
-                             command=lambda: self.sendGentleMessage(self.wordsToSay.get()))
+        button_send = Button(self.root, text="Envoyer", command=lambda: self.sendGentleMessage(self.wordsToSay.get()))
         button_send.grid(row=4, column=2, columnspan=2, padx=20, pady=20)
 
-        button_quit = Button(self.root, text="Quitter",
-                             command=lambda: self.quitRoom())
+        button_quit = Button(self.root, text="Quitter", command=lambda: self.quitRoom())
         button_quit.grid(row=4, column=3, columnspan=2, padx=20, pady=20)
 
         # -> Save default background color in variable
@@ -472,11 +471,12 @@ class gamePage:
         data = "sendMessage///"+inRoom[0]+"///"+User[2]+"///"+message
         print(data)
         response = self.trySendServer(data)
-        print(response)
+
         if response[0] == "500":
             showerror("Une erreur est survenue", response[1])
         elif response[0] == "0":
-            print(response)
+            self.canvas.insert(self.canvas_id, 5000, response[1][len(response[1])-1] + "\n")
+            self.canvas.configure(scrollregion=canvas.bbox("all"))
         else:
             print("SOME ERROR OCCURED")
 

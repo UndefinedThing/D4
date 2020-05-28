@@ -91,10 +91,8 @@ def threaded_client(conn: socket):
                     conn.send(str.encode("1///La room a été quittée"))
 
             if treated[0] == "sendMessage":
-                utl.getObjRoom(treated[1]).broadcast(
-                    player_list.get(treated[2]), treated[3])
-                conn.send(pickle.dumps(
-                    "0///"+utl.getObjRoom(treated[1]).history))
+                utl.getObjRoom(treated[1]).broadcast( player_list.get(treated[2]) , treated[3])
+                conn.send(pickle.dumps(["0",utl.getObjRoom(treated[1]).history]))
 
             if not data:
                 print("Disconnected")

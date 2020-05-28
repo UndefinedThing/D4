@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.simpledialog import *
+from tkinter.scrolledtext import *
 
 import re
 import sys
@@ -413,13 +414,34 @@ class gamePage:
 
         self.root = root
 
-        Label(self.root, text="LE JEU" + str(inRoom[0]), font = "Verdana 16 bold").grid()
+        Label(self.root, text="LE JEU" + str(inRoom[0]), font = "Verdana 16 bold").grid(row=1, column=3, padx=20, pady=20)
 
-        button_quit = Button(self.root, text="Quitter", command=lambda : self.quitRoom())
-        button_quit.grid()
+        canvas = Canvas(self.root, width=600, height=150, bg='white')
+        canvas.grid(row=2, columnspan=5, padx=20, pady=20)
+
+        self.wordsToSay = Entry(self.root, width=30)
+        self.wordsToSay.grid(row=3, column=2, columnspan=3, padx=20, pady=20)
+
+        button_send = Button(self.root, text="Envoyer", command= lambda : self.sendGentleMessage(self.wordsToSay.get()))
+        button_send.grid(row=4, column=2, columnspan=2, padx=20, pady=20)
+
+        button_quit = Button(self.root, text="Quitter", command= lambda : self.quitRoom())
+        button_quit.grid(row=4, column=3, columnspan=2, padx=20, pady=20)
 
         # -> Save default background color in variable
         self.orig_color = self.root.cget("background")
+
+    def sendGentleMessage(self, message):
+        data = "sendMessage///"+inRoom[0]+"///"+User[2]+"///"+message
+
+        response = self.trySendServer(data)
+
+        if response[0] == "500" :
+            showerror("Une erreur est survenue", response[1])
+        elif response[0] == "0":
+            print(response)
+        else :
+            print("SOME ERROR OCCURED")
 
     def quitRoom(self) :
         global inRoom
@@ -463,7 +485,7 @@ def main():
         root.geometry('980x440')
         mainPage(root)
     elif User and inRoom :
-        root.geometry('660x660')
+        root.geometry('660x460')
         gamePage(root)
     else :
         print("aled")

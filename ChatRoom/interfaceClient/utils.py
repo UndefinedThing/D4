@@ -24,7 +24,13 @@ class Player(object):
 class Room(object):
     def __init__(self, name):
         self.players = []  # a list of Players
-        self.name = name
+        self.name = name   # room's name
+        self.history = []  # room's message history
+
+    def welcome_new(self, from_player):
+        msg = self.name + " welcomes: " + from_player.name + '\n'
+        for player in self.players:
+            player.socket.sendall(msg.encode())
 
     def addPlayer(self, addedPlayer):
         for player in self.players:
@@ -47,9 +53,10 @@ class Room(object):
             return "22///Une erreur est survenue"
 
     def broadcast(self, from_player, msg):
-        msg = from_player.name.encode() + b":" + msg
+        self.history.append(msg)
         for player in self.players:
-            player.socket.sendall(msg)
+            
+            player.send()
 
 def createRoom(name) :
     if getRoom(name) != None :

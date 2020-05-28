@@ -78,6 +78,9 @@ def threaded_client(conn: socket):
                     conn.send(str.encode("0///La room a été quittée"))
                 else :
                     conn.send(str.encode("1///La room a été quittée"))
+            
+            if treated[0] == "sendMessage" :
+                utl.getObjRoom(treated[1]).broadcast(player_list.get(treated[2]), treated[3])
 
             if not data:
                 print("Disconnected")
@@ -97,7 +100,7 @@ def threaded_client(conn: socket):
     conn.close()
 
 def main():
-    server = "192.168.0.46"
+    server = "localhost"
     port = 61825
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

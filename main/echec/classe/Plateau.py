@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter.messagebox import showinfo
-import classe
-from classe import Pieces
+import echec.classe
+from echec.classe import Pieces
 from PIL import ImageTk, Image
 
 
@@ -223,6 +223,7 @@ class Plateau:
             if value == ' ':
                 pass
             else:
+                print(value.image)
                 self.plateau.create_image(
                     value.positionX ,
                     value.positionY, 

@@ -1,5 +1,9 @@
 from PIL import ImageTk, Image
 
+import echec
+
+import os
+
 class Pieces:
     """
         -image  
@@ -10,8 +14,14 @@ class Pieces:
     """
 
     def __init__(self, type, couleur, positionX, positionY):
-        image = Image.open('./image/'+couleur+'/'+type+'.png')
+        print('getcwd:      ', os.getcwd())
+        print('__file__:    ', __file__)
+        print("111111111111111111111111111111111")
+        print('./echec/image/'+couleur+'/'+type+'.png')
+        image = Image.open('./echec/image/'+couleur+'/'+type+'.png')
+        print("222222222222222222222222222222222")
         self.image = ImageTk.PhotoImage(image)
+        print("333333333333333333333333333333333")
         self.couleur = couleur
         self.type = type
         self.positionX = positionX

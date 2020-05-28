@@ -5,6 +5,8 @@ from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.simpledialog import *
 
+from echec.classe.Plateau import Plateau
+
 import re
 import sys
 import sched, time
@@ -458,13 +460,13 @@ def main():
 
     if not User and not inRoom:
         root.geometry('680x460')
-        app = conRegPage(root)
+        conRegPage(root)
     elif User and (not inRoom) :
         root.geometry('980x440')
-        app = mainPage(root)
+        mainPage(root)
     elif User and inRoom :
-        root.geometry('180x90')
-        app = gamePage(root)
+        root.geometry('660x660')
+        Plateau(root)
     else :
         print("aled")
         sys.exit()

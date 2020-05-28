@@ -1,5 +1,9 @@
 from PIL import ImageTk, Image
 
+import echec
+
+import os
+
 class Pieces:
     """
         -image  

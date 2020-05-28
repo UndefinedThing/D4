@@ -97,8 +97,8 @@ def threaded_client(conn: socket):
     conn.close()
 
 def main():
-    server = "localhost"
-    port = 5555
+    server = "192.168.0.46"
+    port = 61825
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

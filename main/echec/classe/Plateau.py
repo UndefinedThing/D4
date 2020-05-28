@@ -98,62 +98,65 @@ class Plateau:
             self.quiJoue = "blanc"
 
     def select(self, event):
-        x = event.x
-        y = event.y
-        x=event.x%50
-        x=(event.x-x)+25
-        y=event.y%50
-        y=(event.y-y)+25
-        listXY = [x,y]
-        listXYR = [x,y,'red']
-        listXYG = [x,y,'green']
-        #Selection de la piece à déplacer
-        if self.firstClick == True:
-            self.pieceSelect = self.dicoJeux[self.listPosition.index(listXY)]
-            if self.pieceSelect == " ":
-                pass
-            elif self.pieceSelect.couleur != self.quiJoue:
-                showinfo("aled", "c'est pas ton tour")
-            else:
-                lastItem = None
-                preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
-                if preshot == None or not(preshot):
-                    self.firstClick = True
-                    showinfo("aled", "Vous ne pouvez pas jouer cette piece")
-                else:
-                    self.firstClick = False
-                    for item in preshot:
-                        self.plateau.create_rectangle(item[0]-25,item[1]-25,item[0]+25,item[1]+25,outline=item[2], width="5")
-        
-        #Selection de la case où déplacer la piece
+        if self.quiJoue != self.myCouleur:
+            showinfo("aled", "c'est pas ton tour")
         else:
-            preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
-            if listXYR not in preshot and listXYG not in preshot:
-                pass
+            x = event.x
+            y = event.y
+            x=event.x%50
+            x=(event.x-x)+25
+            y=event.y%50
+            y=(event.y-y)+25
+            listXY = [x,y]
+            listXYR = [x,y,'red']
+            listXYG = [x,y,'green']
+            #Selection de la piece à déplacer
+            if self.firstClick == True:
+                self.pieceSelect = self.dicoJeux[self.listPosition.index(listXY)]
+                if self.pieceSelect == " ":
+                    pass
+                elif self.pieceSelect.couleur != self.myCouleur:
+                    showinfo("aled", "tu es les "+self.myCouleur)
+                else:
+                    lastItem = None
+                    preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
+                    if preshot == None or not(preshot):
+                        self.firstClick = True
+                        showinfo("aled", "Vous ne pouvez pas déplacer cette piece")
+                    else:
+                        self.firstClick = False
+                        for item in preshot:
+                            self.plateau.create_rectangle(item[0]-25,item[1]-25,item[0]+25,item[1]+25,outline=item[2], width="5")
+            
+            #Selection de la case où déplacer la piece
             else:
-                self.pieceSelect.setX(x)
-                self.pieceSelect.setY(y)
-                index = self.listPosition.index(listXY)
-                for key, value in self.dicoJeux.items():
-                    if value == self.pieceSelect:
-                        self.dicoJeux[key] = ' '
-                    elif key == index:
-                        if self.dicoJeux[key] == ' ':
-                            pass
-                        elif self.dicoJeux[key].couleur == "blanc":
-                            self.MortBlanc[tuple([self.dicoJeux[key].positionX,self.dicoJeux[key].positionY])] = self.dicoJeux[key]
-                        elif self.dicoJeux[key].couleur == "noir":
-                            self.MortNoir[tuple([self.dicoJeux[key].positionX,self.dicoJeux[key].positionY])] = self.dicoJeux[key]
-                        self.dicoJeux[key] = self.pieceSelect
+                preshot = self.pieceSelect.preshot(self.dicoJeux, self.listPosition)
+                if listXYR not in preshot and listXYG not in preshot:
+                    pass
+                else:
+                    self.pieceSelect.setX(x)
+                    self.pieceSelect.setY(y)
+                    index = self.listPosition.index(listXY)
+                    for key, value in self.dicoJeux.items():
+                        if value == self.pieceSelect:
+                            self.dicoJeux[key] = ' '
+                        elif key == index:
+                            if self.dicoJeux[key] == ' ':
+                                pass
+                            elif self.dicoJeux[key].couleur == "blanc":
+                                self.MortBlanc[tuple([self.dicoJeux[key].positionX,self.dicoJeux[key].positionY])] = self.dicoJeux[key]
+                            elif self.dicoJeux[key].couleur == "noir":
+                                self.MortNoir[tuple([self.dicoJeux[key].positionX,self.dicoJeux[key].positionY])] = self.dicoJeux[key]
+                            self.dicoJeux[key] = self.pieceSelect
 
-                self.creationPlateau()
-                self.firstClick = True                
-                if self.roiB in self.MortBlanc.values():
-                    showinfo("aled", "le roi Blanc est mort")
-                elif self.roiN in self.MortNoir.values():
-                    showinfo("aled", "le roi Noir est mort")
-                self.checkPion()
-                self.change()
+                    self.creationPlateau()
+                    self.firstClick = True                
+                    if self.roiB in self.MortBlanc.values():
+                        showinfo("aled", "le roi Blanc est mort")
+                    elif self.roiN in self.MortNoir.values():
+                        showinfo("aled", "le roi Noir est mort")
+                    self.checkPion()
+                    self.change()
         
 
     def checkPion(self):
@@ -239,5 +242,6 @@ class Plateau:
                     font = "Arial 20 bold",
                     fill='green')
 
-                
+    def envoie(self):
+        pass
                 

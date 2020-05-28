@@ -5,8 +5,6 @@ from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.simpledialog import *
 
-from echec.classe.Plateau import Plateau
-
 import re
 import sys
 import sched, time
@@ -466,7 +464,7 @@ def main():
         mainPage(root)
     elif User and inRoom :
         root.geometry('660x660')
-        Plateau(root)
+        gamePage(root)
     else :
         print("aled")
         sys.exit()

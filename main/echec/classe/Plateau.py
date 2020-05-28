@@ -4,12 +4,18 @@ import echec.classe
 from echec.classe import Pieces
 from PIL import ImageTk, Image
 
+import pickle
+from tkinter.messagebox import *
+from tkinter.simpledialog import *
 
 class Plateau:
 
-    def __init__(self, window, couleur):
+    def __init__(self, window, couleur, netConn, username, room):
         self.window = window
         self.myCouleur = couleur
+        self.n = netConn
+        self.playerName = username
+        self.room = room
         self.plateau = Canvas(window, width =400, height =400, bg ='white')
         self.quiJoue = "blanc"
         self.firstClick = True
@@ -157,7 +163,7 @@ class Plateau:
                         showinfo("aled", "le roi Noir est mort")
                     self.checkPion()
                     self.change()
-        
+                    
 
     def checkPion(self):
         aled = [0,1,2,3,4,5,6,7,63,62,61,60,59,58,57,56]
@@ -243,5 +249,42 @@ class Plateau:
                     fill='green')
 
     def envoie(self):
-        pass
+        data = pickle.dumps(["dataGame", self.room, self.playerName, self.dicoJeux, self.quiJoue, self.MortBlanc, self.MortNoir])
+
+        response = self.trySendServer(data)
+
+        if response[0] == "500" :
+            showerror("Une erreur est survenue", response[1])
+        elif response[0] == "0":
+            # TODO suite
+            pass
+        else :
+            print("SOME ERROR OCCURED send")
+
+    def recep(self):
+        brut = self.n.client.recv(2048)
+        try :
+            data = pickle.loads(brut)
+        except :
+            data =  brut.decode()
+
+        if data[0] == "0" and data[1] == "boardsInfo":
+            # TODO
+            pass
+
+    def checkConn(self):
+        if (n.send("isItWorking") is None ) :
+            return False
+        else :
+            return True
+
+    def trySendServer(self, data):
+        if self.checkConn():
+            aled = n.send(data)
+            if isinstance(aled, list):
+                return aled
+            else :
+                return aled.split('///')
+        else:
+            return ["500","La connexion au serveur a échoué"]
                 

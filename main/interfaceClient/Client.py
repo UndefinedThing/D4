@@ -495,7 +495,7 @@ def main():
         gamePage(root)
     elif User and inRoom and couleur:
         root.geometry('660x660')
-        Plateau(root, couleur)
+        Plateau(root, couleur, n, User[2], inRoom[0])
     else :
         print("aled")
         sys.exit()

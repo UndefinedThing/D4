@@ -22,9 +22,12 @@ def threaded_client(conn: socket):
         try:
             reply = ""
             data = conn.recv(2048) # <- ERROR
-            reply = data.decode("utf-8")
 
-            treated = reply.split("///") # <- Split request using defined separator to use headers
+            try:
+                treated = pickle.loads(data)
+            except :
+                reply = data.decode("utf-8")
+                treated = reply.split("///") # <- Split request using defined separator to use headers
 
             if treated[0] == "isItWorking" :
                 conn.send(str.encode("1"))
@@ -81,6 +84,13 @@ def threaded_client(conn: socket):
 
             if treated[0] == "whoAmI" :
                 conn.send(str.encode(utl.getObjRoom(treated[1]).whichColor(player_list.get(treated[2]))))
+
+            if treated[0] == "dataGame" :
+                for user in utl.getObjRoom(treated[1]).players:
+                    if player_list.get(treated[2]) != user :
+                        res = ["0", "boardsInfo", treated[3], treated[4], treated[5], treated[6]]
+                        gameInfos = pickle.dumps(res)
+                        utl.getObjRoom(treated[1]).players[0].socket.sendall(gameInfos)
 
             if not data:
                 print("Disconnected")

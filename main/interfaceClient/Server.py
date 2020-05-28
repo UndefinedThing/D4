@@ -110,7 +110,7 @@ def threaded_client(conn: socket):
     conn.close()
 
 def main():
-    server = "192.168.0.46"
+    server = "localhost"
     port = 61825
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

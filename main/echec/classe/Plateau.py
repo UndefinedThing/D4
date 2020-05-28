@@ -176,17 +176,21 @@ class Plateau:
                 self.mort.bind('<Button-1>', self.changementPieces)
                 if self.dicoJeux[i].couleur and self.quiJoue == "blanc":
                     for value in self.MortBlanc.values():
-                        self.mort.create_image(
+                        self.plateau.create_text(
                             value.positionX ,
                             value.positionY, 
-                            image = value.image)
+                            text = value.text,
+                            font = "Arial 20 bold",
+                            fill='green')
                     break
                 elif self.dicoJeux[i].couleur and self.quiJoue == "noir":
                     for value in self.MortNoir.values():
-                        self.mort.create_image(
+                        self.plateau.create_text(
                             value.positionX ,
                             value.positionY, 
-                            image = value.image)
+                            text = value.text,
+                            font = "Arial 20 bold",
+                            fill='red')
                     break
 
     def changementPieces(self, event):
@@ -256,7 +260,7 @@ class Plateau:
         if response[0] == "500" :
             showerror("Une erreur est survenue", response[1])
         elif response[0] == "0":
-            # TODO suite
+            self.recep()
             pass
         else :
             print("SOME ERROR OCCURED send")
@@ -269,7 +273,11 @@ class Plateau:
             data =  brut.decode()
 
         if data[0] == "0" and data[1] == "boardsInfo":
-            # TODO
+            self.dicoJeux = data[2]
+            self.quiJoue =  data[3]
+            self.MortBlanc = data[4]
+            self.MortNoir = data[4]
+            self.creationPlateau()
             pass
 
     def checkConn(self):

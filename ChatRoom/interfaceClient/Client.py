@@ -480,15 +480,20 @@ class gamePage:
         # -> Receive rooms
         response = self.trySendServer("getMessages///raw")
 
+        for element in self.canvas.winfo_children():
+            element.destroy()
+
         if response[0] == "500":
             showerror("Une erreur est survenue", response[1])
         else:
             try:
                 messagesList = response[1:][0]
-                print(messagesList)
-                self.canvas.insert(self.canvas_id, 5000,
-                                   messagesList[0][len(messagesList[1])-1] + "\n")
-                self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+                print(messagesList[0])
+                for message in messagesList[0][len(messagesList[0])-1:]:
+                    print(message)
+                    self.canvas.insert(self.canvas_id, 5000,
+                                       message + "\n")
+                    self.canvas.configure(scrollregion=self.canvas.bbox("all"))
             except:
                 return "error"
 

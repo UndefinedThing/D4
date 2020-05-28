@@ -448,7 +448,8 @@ class gamePage:
 
         self.root = root
 
-        Label(self.root, text="LE JEU" + str(inRoom[0]), font="Verdana 16 bold").grid(row=1, column=3, padx=20, pady=20)
+        Label(self.root, text="LE JEU" +
+              str(inRoom[0]), font="Verdana 16 bold").grid(row=1, column=3, padx=20, pady=20)
 
         self.canvas = Canvas(self.root, width=600, height=150, bg='white')
         self.canvas.grid(row=2, columnspan=5, padx=20, pady=20)
@@ -458,25 +459,50 @@ class gamePage:
         self.wordsToSay = Entry(self.root, width=30)
         self.wordsToSay.grid(row=3, column=2, columnspan=3, padx=20, pady=20)
 
-        button_send = Button(self.root, text="Envoyer", command=lambda: self.sendGentleMessage(self.wordsToSay.get()))
+        button_send = Button(self.root, text="Envoyer",
+                             command=lambda: self.sendGentleMessage(self.wordsToSay.get()))
         button_send.grid(row=4, column=2, columnspan=2, padx=20, pady=20)
 
-        button_quit = Button(self.root, text="Quitter", command=lambda: self.quitRoom())
-        button_quit.grid(row=4, column=3, columnspan=2, padx=20, pady=20)
+        button_ref_room = Button(
+            self.root, text="Rafraichir", command=lambda: self.initMessages())
+        button_ref_room.grid(row=4, column=3, columnspan=2, padx=20, pady=20)
+
+        button_quit = Button(self.root, text="Quitter",
+                             command=lambda: self.quitRoom())
+        button_quit.grid(row=4, column=4, columnspan=2, padx=20, pady=20)
 
         # -> Save default background color in variable
         self.orig_color = self.root.cget("background")
 
+    def initMessages(self):
+        global roomsList
+
+        # -> Receive rooms
+        response = self.trySendServer("getMessages///raw")
+
+        if response[0] == "500":
+            showerror("Une erreur est survenue", response[1])
+        else:
+            try:
+                messagesList = response[1:][0]
+                print(messagesList)
+                self.canvas.insert(self.canvas_id, 5000,
+                                   messagesList[0][len(messagesList[1])-1] + "\n")
+                self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+            except:
+                return "error"
+
     def sendGentleMessage(self, message):
         data = "sendMessage///"+inRoom[0]+"///"+User[2]+"///"+message
-        print(data)
+
         response = self.trySendServer(data)
 
         if response[0] == "500":
             showerror("Une erreur est survenue", response[1])
         elif response[0] == "0":
-            self.canvas.insert(self.canvas_id, 5000, response[1][len(response[1])-1] + "\n")
-            self.canvas.configure(scrollregion=canvas.bbox("all"))
+            self.canvas.insert(self.canvas_id, 5000,
+                               response[1][len(response[1])-1] + "\n")
+            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         else:
             print("SOME ERROR OCCURED")
 

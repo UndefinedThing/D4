@@ -100,3 +100,11 @@ def getRooms():
     for room in roomList:
         res.append([room.name, len(room.players)])
     return res
+
+
+def getMessages():
+    global roomList
+    res = []
+    for room in roomList:
+        res.append(room.history)
+    return res

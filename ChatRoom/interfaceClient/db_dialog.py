@@ -37,7 +37,7 @@ def usersConnection(dbconn, username, password) :
         if (user is None):
             return "3///Aucun utilisateur ne correspond"
         elif (user is not None) and not verify_password(password, str(user[3])):
-            return "3///Mot de passe incorrect"
+            return "2///Mot de passe incorrect"
         else :
             userInf = list(user)
             userInf.pop(3)

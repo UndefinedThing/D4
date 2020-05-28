@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter.messagebox import showinfo
-import classe
-from classe import Pieces
+import echec.classe
+from echec.classe import Pieces
 from PIL import ImageTk, Image
 
 
@@ -164,18 +164,20 @@ class Plateau:
                 self.mort = Canvas(self.window, width =400, height =400, bg ='grey')
                 self.mort.pack()
                 self.mort.bind('<Button-1>', self.changementPieces)
-                if self.dicoJeux[i].couleur == "blanc":
+                if self.dicoJeux[i].couleur and self.quiJoue == "blanc":
                     for value in self.MortBlanc.values():
                         self.mort.create_image(
                             value.positionX ,
                             value.positionY, 
                             image = value.image)
-                elif self.dicoJeux[i].couleur ==" noir":
+                    break
+                elif self.dicoJeux[i].couleur and self.quiJoue == "noir":
                     for value in self.MortNoir.values():
                         self.mort.create_image(
                             value.positionX ,
                             value.positionY, 
                             image = value.image)
+                    break
 
     def changementPieces(self, event):
         x = event.x
@@ -221,6 +223,7 @@ class Plateau:
             if value == ' ':
                 pass
             else:
+                print(value.image)
                 self.plateau.create_image(
                     value.positionX ,
                     value.positionY, 

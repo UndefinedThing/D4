@@ -5,6 +5,8 @@ from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter.simpledialog import *
 
+from echec.classe.Plateau import Plateau
+
 import re
 import sys
 import sched, time
@@ -18,7 +20,7 @@ regSamePassword = True
 
 User = []
 roomsList = []
-inRoom = ""
+inRoom = []
 
 class conRegPage:
     def __init__(self,root):
@@ -126,7 +128,7 @@ class conRegPage:
         self.registerUser.grid()
 
     def checkConn(self):
-        if (n.getPos() is None) :
+        if ( n.send("isItWorking") is None ) :
             self.connection.configure(text="Pas connecté", bg="red")
             return False
         else :
@@ -178,8 +180,11 @@ class conRegPage:
 
             response = self.trySendServer(data)
 
-            if response[0] == "500" :
+            if response[0] == "500" or response[0] == "2" :
                 showerror("Une erreur est survenue", response[1])
+            elif response[0] == "3" :
+                self.username.configure(bg="red")
+                raise Exception("Aucun utilisateur ne correspond")
             else :
                 response.pop(0)
                 self.toMain(response)
@@ -245,7 +250,10 @@ class conRegPage:
     def trySendServer(self, data):
         if self.checkConn():
             aled = n.send(data)
-            return aled.split('///')
+            if isinstance(aled, list):
+                return aled
+            else :
+                return aled.split('///')
         else:
             return ["500","La connexion au serveur a échoué"]
 
@@ -338,31 +346,46 @@ class mainPage:
         else :
             for room in roomsList:
                 button = Button(self.roomsList, name=room[0], width=64, text=room[0])
-                button.bind("<Button-1>", lambda event: self.printElem(event))
+                button.bind("<Button-1>", lambda event: self.joinRoom(event))
                 button.grid()
 
         self.roomsList.configure(scrollregion=self.roomsList.bbox("all"))
 
-    def printElem(self, event):
-        
-        print("Clicked ! :")
-        print(str(event.widget))
-        print(str(event.widget).split('.'))
+    def joinRoom(self, event):
+        global inRoom
 
-    def createRoom(self, name):
-        data = "createRoom///"+name
+        data = "joinRoom///"+str(event.widget).split('.')[len(str(event.widget).split('.'))-1]+"///"+User[2]
 
         response = self.trySendServer(data)
 
         if response[0] == "500" :
             showerror("Une erreur est survenue", response[1])
+        elif response[0] == "0":
+            inRoom = response[1:]
+            self.root.withdraw()
+            main()
         else :
-            print(response)
+            print("SOME ERROR OCCURED")
+
+    def createRoom(self, name):
+        global inRoom
+        data = "createRoom///"+name+"///"+User[2]
+
+        response = self.trySendServer(data)
+
+        if response[0] == "500" :
+            showerror("Une erreur est survenue", response[1])
+        elif response[0] == "0":
+            inRoom = response[1:]
+            self.root.withdraw()
+            main()
+        else :
+            print("SOME ERROR OCCURED")
 
         self.initRooms()
 
     def checkConn(self):
-        if (n.getPos() is None) :
+        if (n.send("isItWorking") is None ) :
             return False
         else :
             return True
@@ -386,18 +409,64 @@ class mainPage:
         if com == "disc" : main();
         if com == "quit" : sys.exit();
 
+class gamePage:
+    def __init__(self,root):
+        global inRoom
+
+        self.root = root
+
+        Label(self.root, text="LE JEU" + str(inRoom[0]), font = "Verdana 16 bold").grid()
+
+        button_quit = Button(self.root, text="Quitter", command=lambda : self.quitRoom())
+        button_quit.grid()
+
+        # -> Save default background color in variable
+        self.orig_color = self.root.cget("background")
+
+    def quitRoom(self) :
+        global inRoom
+        data = "quitRoom///"+inRoom[0]+"///"+User[2]
+
+        response = self.trySendServer(data)
+
+        if response[0] == "500" :
+            showerror("Une erreur est survenue", response[1])
+        elif response[0] == "0":
+            inRoom = []
+            self.root.destroy()
+            main()
+        else :
+            print("SOME ERROR OCCURED")
+
+    def checkConn(self):
+        if (n.send("isItWorking") is None ) :
+            return False
+        else :
+            return True
+
+    def trySendServer(self, data):
+        if self.checkConn():
+            aled = n.send(data)
+            if isinstance(aled, list):
+                return aled
+            else :
+                return aled.split('///')
+        else:
+            return ["500","La connexion au serveur a échoué"]
+
 def main():
     root = Tk()
     root.title("D4 Client")
 
-    if not User and inRoom == "":
+    if not User and not inRoom:
         root.geometry('680x460')
-        app = conRegPage(root)
-    elif User and (inRoom == "") :
+        conRegPage(root)
+    elif User and (not inRoom) :
         root.geometry('980x440')
-        app = mainPage(root)
-    elif User and (inRoom != "") :
-        print("Connected to room")
+        mainPage(root)
+    elif User and inRoom :
+        root.geometry('660x660')
+        Plateau(root)
     else :
         print("aled")
         sys.exit()

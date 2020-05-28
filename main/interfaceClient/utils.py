@@ -13,36 +13,45 @@ def create_socket(address):
     print("Now listening at ", address)
     return s
 
-class Player:
-    def __init__(self, socket, name="new"):
-        socket.setblocking(0)
-        self.socket = socket
+class Player(object):
+    def __init__(self, name, sock):
+        self.socket = sock
         self.name = name
 
     def fileno(self):
         return self.socket.fileno()
 
-class Room:
+class Room(object):
     def __init__(self, name):
-        self.players = []  # a list of sockets
+        self.players = []  # a list of Players
         self.name = name
 
-    def addPlayer(self, from_player):
-        msg = self.name + " welcomes: " + from_player.name + '\n'
+    def addPlayer(self, addedPlayer):
         for player in self.players:
-            player.socket.sendall(msg.encode())
+            if player.name == addedPlayer.name :
+                return "Already in"
+
+        try:
+            self.players.append(addedPlayer)
+            return "0///Le joueur a bien été ajouté"
+        except Exception as e:
+            print(e)
+            return "22///Une erreur est survenue"
+
+    def removePlayer(self, player):
+        try:
+            self.players.remove(player)
+            return True
+        except Exception as e:
+            print(e)
+            return "22///Une erreur est survenue"
 
     def broadcast(self, from_player, msg):
         msg = from_player.name.encode() + b":" + msg
         for player in self.players:
             player.socket.sendall(msg)
 
-    def remove_player(self, player):
-        self.players.remove(player)
-        leave_msg = player.name.encode() + b"has left the room\n"
-        self.broadcast(player, leave_msg)
-
-def createRoom(name, creatSocket) :
+def createRoom(name) :
     if getRoom(name) != None :
         return "11///Une room de ce nom existe déjà"
     else :
@@ -60,7 +69,15 @@ def createRoom(name, creatSocket) :
 def getRoom(searchName):
     for room in roomList :
         if room.name == searchName :
+            print(room.players)
             return [room.name, room.players]
+
+    return None
+
+def getObjRoom(searchName):
+    for room in roomList :
+        if room.name == searchName :
+            return room
 
     return None
 
@@ -68,5 +85,5 @@ def getRooms():
     global roomList
     res = []
     for room in roomList:
-        res.append([room.name,room.players])   
+        res.append([room.name,len(room.players)])   
     return res

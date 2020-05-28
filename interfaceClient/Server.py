@@ -6,6 +6,7 @@ import sys
 import pickle
 import utils as utl
 
+
 def threaded_client(conn):
     conn.send(str.encode("Connected"))
 
@@ -20,18 +21,21 @@ def threaded_client(conn):
             data = conn.recv(2048)
             reply = data.decode("utf-8")
 
-            treated = reply.split("///") # <- Split request using defined separator to use headers
+            # <- Split request using defined separator to use headers
+            treated = reply.split("///")
 
-            if treated[0] == "connect" :
-                conn.send(str.encode(usersConnection(dbConn, treated[1], treated[2])))
-            if treated[0] == "register" :
-                conn.send(str.encode(userRegister(dbConn, treated[1], treated[2], treated[3])))
-            if treated[0] == "createRoom" :
-                try :
-                    conn.send( str.encode( utl.createRoom(str(treated[1]))))
+            if treated[0] == "connect":
+                conn.send(str.encode(usersConnection(
+                    dbConn, treated[1], treated[2])))
+            if treated[0] == "register":
+                conn.send(str.encode(userRegister(
+                    dbConn, treated[1], treated[2], treated[3])))
+            if treated[0] == "createRoom":
+                try:
+                    conn.send(str.encode(utl.createRoom(str(treated[1]))))
                 except Error as e:
                     print('Some error occured line 33 : ', e)
-            if treated[0] == "getRooms" :
+            if treated[0] == "getRooms":
                 res = ["0", utl.getRooms()]
                 roomsList = pickle.dumps(res)
                 conn.send(roomsList)
@@ -50,6 +54,7 @@ def threaded_client(conn):
 
     print("Lost connection")
     conn.close()
+
 
 server = "localhost"
 port = 5555

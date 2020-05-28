@@ -4,6 +4,7 @@ roomList = []
 
 MAX_CLIENTS = 30
 
+
 def create_socket(address):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -13,6 +14,7 @@ def create_socket(address):
     print("Now listening at ", address)
     return s
 
+
 class Player(object):
     def __init__(self, name, sock):
         self.socket = sock
@@ -21,20 +23,16 @@ class Player(object):
     def fileno(self):
         return self.socket.fileno()
 
+
 class Room(object):
     def __init__(self, name):
         self.players = []  # a list of Players
         self.name = name   # room's name
         self.history = []  # room's message history
 
-    def welcome_new(self, from_player):
-        msg = self.name + " welcomes: " + from_player.name + '\n'
-        for player in self.players:
-            player.socket.sendall(msg.encode())
-
     def addPlayer(self, addedPlayer):
         for player in self.players:
-            if player.name == addedPlayer.name :
+            if player.name == addedPlayer.name:
                 return "Already in"
 
         try:
@@ -52,45 +50,54 @@ class Room(object):
             print(e)
             return "22///Une erreur est survenue"
 
-    def broadcast(self, from_player, msg):
+    def welcome_new(self, from_player):
+        msg = "Welcomes to " + from_player.name + 'in' + self.name + '\n'
         self.history.append(msg)
-        for player in self.players:
-            
-            player.send()
+        # for player in self.players:
+        #     player.socket.sendall(msg.encode())
 
-def createRoom(name) :
-    if getRoom(name) != None :
+    def broadcast(self, from_player, msg):
+        msg = from_player.name.encode() + ":" + msg
+        self.history.append(msg)
+        # for player in self.players:
+
+
+def createRoom(name):
+    if getRoom(name) != None:
         return "11///Une room de ce nom existe déjà"
-    else :
-        try :
-            if "///" in name or "." in name :
+    else:
+        try:
+            if "///" in name or "." in name:
                 raise Exception("12///Nom de room invalide")
             new_room = Room(name)
             roomList.append(new_room)
             return "0///La room a été créée"
         except Exception as e:
-            if "12" in e.split("///")[0] :
+            if "12" in e.split("///")[0]:
                 return e
             return "13///Une erreur est survenue"
 
+
 def getRoom(searchName):
-    for room in roomList :
-        if room.name == searchName :
+    for room in roomList:
+        if room.name == searchName:
             print(room.players)
             return [room.name, room.players]
 
     return None
 
+
 def getObjRoom(searchName):
-    for room in roomList :
-        if room.name == searchName :
+    for room in roomList:
+        if room.name == searchName:
             return room
 
     return None
+
 
 def getRooms():
     global roomList
     res = []
     for room in roomList:
-        res.append([room.name,len(room.players)])   
+        res.append([room.name, len(room.players)])
     return res

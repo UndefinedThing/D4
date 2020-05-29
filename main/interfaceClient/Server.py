@@ -90,7 +90,7 @@ def threaded_client(conn: socket):
                     if player_list.get(treated[2]) != user :
                         res = ["0", "boardsInfo", treated[3], treated[4], treated[5], treated[6]]
                         gameInfos = pickle.dumps(res)
-                        utl.getObjRoom(treated[1]).players[0].socket.sendall(gameInfos)
+                        user.socket.sendall(gameInfos)
 
             if not data:
                 print("Disconnected")

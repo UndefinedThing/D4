@@ -29,3 +29,14 @@ class Network:
                 return a.decode()
         except socket.error as e:
             print("Network error : ", e)
+
+    def sendBytes(self, data):
+        try:
+            self.client.send(data)
+            a = self.client.recv(4096)
+            try :
+                return pickle.loads(a)
+            except :
+                return a.decode()
+        except socket.error as e:
+            print("Network error : ", e)

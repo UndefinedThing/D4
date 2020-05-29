@@ -94,8 +94,15 @@ class Plateau:
                 self.listPosition.append([x,y])
         self.pieceSelect = None
 
+        self.plateau.delete(ALL)
+        self.plateau.pack()
+        self.plateau.bind('<Button-1>', self.select)
+
         #Création du plateau
         self.creationPlateau(self.dicoJeux)
+
+        if self.myCouleur == "noir":
+            self.recep()
 
     def change(self):
         if self.quiJoue == "blanc":
@@ -163,7 +170,7 @@ class Plateau:
                         showinfo("aled", "le roi Noir est mort")
                     self.checkPion()
                     self.change()
-                    
+                    self.envoie()
 
     def checkPion(self):
         aled = [0,1,2,3,4,5,6,7,63,62,61,60,59,58,57,56]
@@ -221,9 +228,6 @@ class Plateau:
 
     #Fonction pour creer le plateau
     def creationPlateau(self, newDico = None):
-        self.plateau.delete(ALL)
-        self.plateau.pack()
-        self.plateau.bind('<Button-1>', self.select)
 
         for l in range(0, 8):
             for c in range(0, 8):
@@ -266,29 +270,34 @@ class Plateau:
             print("SOME ERROR OCCURED send")
 
     def recep(self):
+        print("aaaaaaaaaaaaaaa")
         brut = self.n.client.recv(2048)
+        print("bbbbbbbbbbbbbbbbb")
         try :
             data = pickle.loads(brut)
         except :
             data =  brut.decode()
 
         if data[0] == "0" and data[1] == "boardsInfo":
+            print("================= DANS LE IF")
             self.dicoJeux = data[2]
             self.quiJoue =  data[3]
             self.MortBlanc = data[4]
-            self.MortNoir = data[4]
+            self.MortNoir = data[5]
             self.creationPlateau()
             pass
+        
+        print("========================= SORTIE DU IF")
 
     def checkConn(self):
-        if (n.send("isItWorking") is None ) :
+        if (self.n.send("isItWorking") is None ) :
             return False
         else :
             return True
 
     def trySendServer(self, data):
         if self.checkConn():
-            aled = n.send(data)
+            aled = self.n.sendBytes(data)
             if isinstance(aled, list):
                 return aled
             else :

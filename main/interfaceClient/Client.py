@@ -370,20 +370,24 @@ class mainPage:
 
     def createRoom(self, name):
         global inRoom
-        data = "createRoom///"+name+"///"+User[2]
 
-        response = self.trySendServer(data)
-
-        if response[0] == "500" :
-            showerror("Une erreur est survenue", response[1])
-        elif response[0] == "0":
-            inRoom = response[1:]
-            self.root.withdraw()
-            main()
+        if not name:
+            showerror("Une erreur est survenue", "Impossible de créer une room sans nom")
         else :
-            print("SOME ERROR OCCURED")
+            data = "createRoom///"+name+"///"+User[2]
 
-        self.initRooms()
+            response = self.trySendServer(data)
+
+            if response[0] == "500" :
+                showerror("Une erreur est survenue", response[1])
+            elif response[0] == "0":
+                inRoom = response[1:]
+                self.root.withdraw()
+                main()
+            else :
+                print("SOME ERROR OCCURED")
+
+            self.initRooms()
 
     def checkConn(self):
         if (n.send("isItWorking") is None ) :

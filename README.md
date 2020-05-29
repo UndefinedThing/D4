@@ -9,6 +9,7 @@ Projet Dev UF B2
 - Solution Technique
 - Fonctionnaltiés
 - Problèmes rencontrés et solutions
+- Prérequis
 - Installation
 
 ## Présentation de l'équipe
@@ -46,9 +47,19 @@ Le logiciel propose plusieurs fonctionnatiltés :
 - Message client/serveur -> utilisation d'une librairie python pour transformer la data en bytes pour la transférer
 - Tkinter -> incomprehension de certain probleme lier à cette librairie python
 
+## Prérequis
+
+- SQLite3
+- python 3.7
+- Tkinter
+- socket
+- pickle
+- pillow
+
 ## Installation
 
 - Veuillez télécharger l'archive du projet
 - Récupérez le dossier main
 - Pour jouer en local, oubliez pas de changer l'adresse du serveur et du client dans ces 2 fichiers respectifs : [Network.py](./main/interfaceClient/Network.py) & [Server.py](./main/interfaceClient/Server.py) dans le dossier interfaceClient
 - Pour jouer en ligne, oubliez pas de changer l'adresse du serveur et du client dans ces 2 fichiers respectifs : [Network.py](./main/interfaceClient/Network.py) & [Server.py](./main/interfaceClient/Server.py) dans le dossier interfaceClient. Il vous faut aussi autoriser python a pouvoir passer le pare-feu de votre ordinateur en autorisant le pythona communiquer sur un réseau privée.
+  -Pour utiliser le chatroom, allez dans le dossier Chatroom et faite les meme commande et modification que pour la version jeu d'échec

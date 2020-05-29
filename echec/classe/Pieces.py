@@ -10,13 +10,13 @@ class Pieces:
     """
 
     def __init__(self, type, couleur, positionX, positionY):
-        #image = Image.open('./image/'+couleur+'/'+type+'.png')
-        #self.image = ImageTk.PhotoImage(image)
+        image = Image.open('./image/'+couleur+'/'+type+'.png')
+        self.image = ImageTk.PhotoImage(image)
         self.couleur = couleur
         self.type = type
         self.positionX = positionX
         self.positionY = positionY
-        self.text = self.solutiondesecour()
+        #self.text = self.solutiondesecour()
     
     def setX(self, newX):
         self.positionX = newX

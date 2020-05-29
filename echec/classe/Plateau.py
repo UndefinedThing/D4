@@ -8,7 +8,7 @@ from PIL import ImageTk, Image
 class Plateau:
 
     def __init__(self, window):
-    
+        self.window = window
         self.plateau = Canvas(window, width =400, height =400, bg ='white')
         self.quiJoue = "blanc"
         self.firstClick = True
@@ -224,7 +224,7 @@ class Plateau:
             if value == ' ':
                 pass
             else:
-                self.mort.create_image(
+                self.plateau.create_image(
                             value.positionX ,
                             value.positionY, 
                             image = value.image)

@@ -9,7 +9,7 @@ Projet Dev UF B2
 - Solution Technique
 - Fonctionnaltiés
 - Problèmes rencontrés et solutions
-- Bilan personnnel
+- Installation
 
 ## Présentation de l'équipe
 

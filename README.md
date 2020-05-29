@@ -51,4 +51,4 @@ Le logiciel propose plusieurs fonctionnatiltés :
 - Veuillez télécharger l'archive du projet
 - Récupérez le dossier main
 - Pour jouer en local, oubliez pas de changer l'adresse du serveur et du client dans ces 2 fichiers respectifs : [Network.py](./main/interfaceClient/Network.py) & [Server.py](./main/interfaceClient/Server.py) dans le dossier interfaceClient
-- Pour jouer en ligne, oubliez pas de changer l'adresse du serveur et du client dans ces 2 fichiers respectifs : [Network.py](./main/interfaceClient/Network.py) & [Server.py](./main/interfaceClient/Server.py) dans le dossier interfaceClient
+- Pour jouer en ligne, oubliez pas de changer l'adresse du serveur et du client dans ces 2 fichiers respectifs : [Network.py](./main/interfaceClient/Network.py) & [Server.py](./main/interfaceClient/Server.py) dans le dossier interfaceClient. Il vous faut aussi autoriser python a pouvoir passer le pare-feu de votre ordinateur en autorisant le pythona communiquer sur un réseau privée.

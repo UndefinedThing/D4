@@ -223,20 +223,11 @@ class Plateau:
         for value in self.dicoJeux.values():
             if value == ' ':
                 pass
-            elif value.couleur == 'noir':
-                self.plateau.create_text(
-                    value.positionX ,
-                    value.positionY, 
-                    text = value.text,
-                    font = "Arial 20 bold",
-                    fill='red')
-            elif value.couleur == 'blanc':
-                self.plateau.create_text(
-                    value.positionX ,
-                    value.positionY, 
-                    text = value.text,
-                    font = "Arial 20 bold",
-                    fill='green')
+            else:
+                self.mort.create_image(
+                            value.positionX ,
+                            value.positionY, 
+                            image = value.image)
 
                 
                 
